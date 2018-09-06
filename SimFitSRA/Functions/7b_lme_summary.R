@@ -110,6 +110,7 @@ lme_summary = function(post, max_p_overfished, i, parallel = T, verbose = T) {
                         x1 = NA, x2 = NA, x3 = NA)
     
     colnames(output)[(ncol(output) - 2):ncol(output)] = c("50%", "2.5%", "97.5%")
+    output$bgr = NA
   }
   
   

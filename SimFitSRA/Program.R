@@ -18,9 +18,9 @@ nsim = as.numeric(args[2])      # number of random data sets ran for this batch
 set.seed(seed)     
 
 # options
-write = F   # write output folders and files?
+write = T   # write output folders and files?
 P = F       # run JAGS in parallel? 
-verbose = T # print progress messages?
+verbose = F # print progress messages?
 out_main_folder = "Output"
 out_sub_folder = paste("Out", seed, sep = "")
 
