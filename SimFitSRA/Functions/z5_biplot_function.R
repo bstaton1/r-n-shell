@@ -7,7 +7,7 @@ biplot = function(x, y, xlab = "X-AXIS", ylab = "Y-AXIS", new_window = T) {
   # set up layout
   mat = rbind(c(1,2), c(3,4))
   layout(mat, widths = c(1, 0.1), heights = c(0.1, 1))
-  layout.show(4)
+  # layout.show(4)
   # obtain x and y lims
   abs.max = max(abs(c(x, y)), na.rm = T) * 1.05
   lim = abs.max * c(-1,1)

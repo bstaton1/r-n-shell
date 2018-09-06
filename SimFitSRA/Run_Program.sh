@@ -7,8 +7,8 @@ export PATH=${PATH}":/c/Program Files/R/R-3.5.0/bin"     # for my laptop
 # export PATH=${PATH}":/c/Program Files/R/R-X.X.X/bin"   # for some other user
 
 # simulation dimensions
-seeds=(100 200 300)
-nsim=5
+seeds=(100 200 300 400 500 600 700 800 900 1000)
+nsim=10
 
 # loop through seeds and run the program using each one
 for seed in ${seeds[@]}
