@@ -20,7 +20,7 @@ set.seed(seed)
 # options
 write = T   # write output folders and files?
 P = F       # run JAGS in parallel? 
-verbose = F # print progress messages?
+verbose = T # print progress messages?
 out_main_folder = "Output"
 out_sub_folder = paste("Out", seed, sep = "")
 
