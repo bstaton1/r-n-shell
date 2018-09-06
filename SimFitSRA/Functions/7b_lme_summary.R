@@ -67,13 +67,13 @@ lme_summary = function(post, max_p_overfished, i, parallel = T) {
       mgmt_post_lme[j,] = gen_mgmt(
         params = list(alpha = alpha_post_lme[j,], beta = beta_post_lme[j,],
                       U_msy = U_msy_post_lme[j,], S_msy = S_msy_post_lme[j,],
-                      U_range = seq(0,1,0.01), max_p_overfished = max_p_overfished)
+                      U_range = seq(0,1,0.01), max_p_overfished = max_p_overfished, ns = ns)
       )$mgmt
       
       mgmt_post_lm[j,] = gen_mgmt(
         params = list(alpha = alpha_post_lm[j,], beta = beta_post_lm[j,],
                       U_msy = U_msy_post_lm[j,], S_msy = S_msy_post_lm[j,],
-                      U_range = seq(0,1,0.01), max_p_overfished = max_p_overfished)
+                      U_range = seq(0,1,0.01), max_p_overfished = max_p_overfished, ns = ns)
       )$mgmt
     }
     

@@ -5,12 +5,22 @@
 # CLEAR THE WORKSPACE
 rm(list = ls(all = T))
 
-set.seed(4000)     # random seed
+# handle command line arguments
+# args = commandArgs(trailingOnly = T)
+# seed = as.numeric(args[1])      # seed for this batch
+# nsim = as.numeric(args[2])      # number of random data sets ran for this batch
 
-write = F
+seed = 1
+nsim = 2
+
+set.seed(seed)     # set the random seed
+
+# options
+write = F  # write output folders and files?
+P = F      # run JAGS in parallel? 
+
 out_main_folder = "Output"
-out_sub_folder = "Out1"
-nsim = 1
+out_sub_folder = paste("Out", seed, sep = "")
 
 # LOAD PACKAGES
 library(mvtnorm)
@@ -64,14 +74,14 @@ for (i in 1:nsim) {
   obs_out = gen_Rys_obs(params, obs_out)
 
   # step 4a: fit the lme/lm models
-  lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out)
+  lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out, parallel = P)
   
   # step 4b: fit the tsm model
   # put here when complete
 
   # step 5: obtain summaries and save output
   params_summ = rbind(params_summ, params_summary(params = params, i = i))
-  lme_summ = rbind(lme_summ, lme_summary(post = lme_post, i = i, max_p_overfished = params$max_p_overfished))
+  lme_summ = rbind(lme_summ, lme_summary(parallel = P, post = lme_post, i = i, max_p_overfished = params$max_p_overfished))
   
   cat("--------------------------------\n")
 }
