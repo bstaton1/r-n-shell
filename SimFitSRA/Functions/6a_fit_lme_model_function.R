@@ -10,10 +10,10 @@ fit_lme_model = function(params, true, obs, parallel = T) {
     jags_dat = lme_data_prep(params = params, obs = obs)
     
     ### MCMC DIMENSIONS ###
-    ni = 10000
-    nb = 1000
-    n_thin = 4
-    n_chains = 4
+    ni = 1000
+    nb = 100
+    n_thin = 1
+    n_chains = 2
     # ni/n_thin * n_chains
     n_iter = ni + nb
     

@@ -7,6 +7,7 @@ rm(list = ls(all = T))
 
 set.seed(4000)     # random seed
 
+write = F
 out_main_folder = "Output"
 out_sub_folder = "Out1"
 nsim = 1
@@ -17,9 +18,6 @@ library(R2OpenBUGS)
 library(R2jags)
 library(rjags)
 library(scales)
-
-# READ MY FUNCTIONS
-# source("C:/Users/bas0041/Desktop/run_functions_source.R")
 
 # READ IN FUNCTIONS FOR THIS ANALYSIS
 func_dir = paste(getwd(), "Functions", sep = "/")
@@ -34,10 +32,10 @@ Smsy_post = samps[,substr(colnames(samps), 1, 4) == "Smsy"]
 out_dir = paste(getwd(), out_main_folder, out_sub_folder, sep = "/")
 
 # create the main folder if it does not exist
-if(!dir.exists(paste(getwd(), out_main_folder, sep = "/"))) dir.create(paste(working_dir, out_main_folder, sep = "/"))
+if(!dir.exists(paste(getwd(), out_main_folder, sep = "/")) & write) dir.create(paste(getwd(), out_main_folder, sep = "/"))
 
 # create the sub folder if it does not exist
-if(!dir.exists(out_dir)) dir.create(out_dir)
+if(!dir.exists(out_dir) & write) dir.create(out_dir)
 
 ##### SIMULATE #####
 
@@ -81,7 +79,7 @@ for (i in 1:nsim) {
 Sys.time() - starttime
 
 # save output
-write.csv(params_summ, paste(out_dir, "param_summary.csv", sep = "/"), row.names = F)
-write.csv(lme_summ, paste(out_dir, "lme_summary.csv", sep = "/"), row.names = F)
- 
+if (write) write.csv(params_summ, paste(out_dir, "param_summary.csv", sep = "/"), row.names = F)
+if (write) write.csv(lme_summ, paste(out_dir, "lme_summary.csv", sep = "/"), row.names = F)
+
 
