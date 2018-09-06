@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # make R findable in the path
-export PATH=${PATH}":/c/Program Files/R/R-3.5.0/bin"
-# export PATH=${PATH}":/c/Program Files/R/R-3.4.4/bin"
+# I can't figure out how to set this permanently, so I do it each time
+export PATH=${PATH}":/c/Program Files/R/R-3.5.0/bin"     # for my laptop
+# export PATH=${PATH}":/c/Program Files/R/R-3.4.4/bin"   # for my desktop
+# export PATH=${PATH}":/c/Program Files/R/R-X.X.X/bin"   # for some other user
 
 # ask for input
-
-# echo "-------------------------------"
 
 echo "-------------------------------"
 echo "Please enter the number of simulations per sample size:"
@@ -46,4 +46,3 @@ done
 
 # run the output analysis script
 Rscript LinRegOutputAnalysis.R
-

@@ -1,8 +1,9 @@
+# this program takes 2 input arguments and runs the simulation/estimation
 
 # handle command line arguments
 args = commandArgs(trailingOnly = T)
-n = as.numeric(args[1])
-nsim = as.numeric(args[2])
+n = as.numeric(args[1])      # sample size
+nsim = as.numeric(args[2])   # number of random data sets
 
 # read in functions
 source("Functions.R")
@@ -17,12 +18,13 @@ pdf(pltFileName, h = 5, w = 5)
 for (i in 1:nsim) {
   cat("\r", "Simulating Relationship #", i, sep = "")
   
-  # Sys.sleep(0.1)
-  
+  # generate data
   temp.dat = SimFunc(n = n, i = i)
   
+  # generate fitted relationship
   temp.fit = FitFunc(temp.dat, do.plot = T)
   
+  # store output
   if (i == 1) {
     dat = temp.dat
     fit = temp.fit
@@ -31,22 +33,18 @@ for (i in 1:nsim) {
     fit = rbind(fit, temp.fit)
   }
 }
-cat("\n")
 junk = dev.off(); rm(junk)
-
-# write the output
 cat("\n-------------------------------\n")
 
+# write the output
 write.table(dat, datFileName, row.names = F)
 write.table(fit, fitFileName, row.names = F)
 
-# print a message saying files were printed
+# print a message saying files were written and where
 datFileName = paste("'", datFileName, "'", sep = "")
 fitFileName = paste("'", fitFileName, "'", sep = "")
 pltFileName = paste("'", pltFileName, "'", sep = "")
 cat("Files written to ", getwd(), ":\n  ",
     datFileName, "\n  ", fitFileName, "\n  ", pltFileName, sep = "")
-
-# cat ("\n\n\n", mean(rnorm(3)))
 
 cat("\n-------------------------------\n")
