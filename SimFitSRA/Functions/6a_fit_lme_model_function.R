@@ -2,7 +2,7 @@
 # detach(params); detach(obs); detach(true)
 
 parallel = F
-fit_lme_model = function(params, true, obs, parallel = T) {
+fit_lme_model = function(params, true, obs, parallel = T, verbose = T) {
   
   output = with(append(append(params, true), obs), {
     
@@ -35,7 +35,7 @@ fit_lme_model = function(params, true, obs, parallel = T) {
         list("ni", "nb", "n_thin", "n_chains", "n_iter")
       )
       
-      cat("  Running JAGS: LME Model (Parallel)", "\n", sep = "")
+      if (verbose) cat("  Running JAGS: LME Model (Parallel)", "\n", sep = "")
       post = tryCatch({
         jags.parallel(data = jags_data,
                       inits = NULL,
@@ -50,7 +50,7 @@ fit_lme_model = function(params, true, obs, parallel = T) {
       if(!is.null(post)) post = as.mcmc(post)
     } else {
       ### RUN THE SAMPLER: NOT PARALLEL ###
-      cat("  Running JAGS: LME Model (Not Parallel)", "\n", sep = "")
+      if (verbose) cat("  Running JAGS: LME Model (Not Parallel)", "\n", sep = "")
       post = tryCatch({
         invisible(capture.output(jmod <- jags.model(file = "lme_model.txt", data = jags_dat,
                                                    n.chains = n_chains, inits = NULL, n.adapt = 1000)))

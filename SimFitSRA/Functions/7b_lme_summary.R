@@ -4,10 +4,10 @@
 # max_p_overfished = params$max_p_overfished
 # parallel = T
 
-lme_summary = function(post, max_p_overfished, i, parallel = T) {
+lme_summary = function(post, max_p_overfished, i, parallel = T, verbose = T) {
   
   # print message
-  cat("  Summarizing LME Model Output", "\n", sep = "")
+  if(verbose) cat("  Summarizing LME Model Output", "\n", sep = "")
   
   # determine the appropriate summary function
   if (parallel) {

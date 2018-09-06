@@ -18,9 +18,9 @@ nsim = as.numeric(args[2])      # number of random data sets ran for this batch
 set.seed(seed)     
 
 # options
-write = T  # write output folders and files?
-P = F      # run JAGS in parallel? 
-
+write = F   # write output folders and files?
+P = F       # run JAGS in parallel? 
+verbose = T # print progress messages?
 out_main_folder = "Output"
 out_sub_folder = paste("Out", seed, sep = "")
 
@@ -60,7 +60,11 @@ starttime = Sys.time()
 params_summ = NULL
 lme_summ = NULL
 for (i in 1:nsim) {
-  cat("Simulation #", i, "\n", sep = "")
+  if (verbose) {
+    cat("Simulation #", i, "\n", sep = "")
+  } else {
+    cat("\r", "Simulation #", i, sep = "")
+  }
 
   # step 1: generate random parameters
   params = gen_params()
@@ -78,18 +82,19 @@ for (i in 1:nsim) {
   obs_out = gen_Rys_obs(params, obs_out)
 
   # step 4a: fit the lme/lm models
-  lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out, parallel = P)
+  lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out, parallel = P, verbose = verbose)
   
   # step 4b: fit the tsm model
   # put here when complete
 
   # step 5: obtain summaries and save output
   params_summ = rbind(params_summ, params_summary(params = params, i = i))
-  lme_summ = rbind(lme_summ, lme_summary(parallel = P, post = lme_post, i = i, max_p_overfished = params$max_p_overfished))
+  lme_summ = rbind(lme_summ, lme_summary(parallel = P, post = lme_post, i = i, max_p_overfished = params$max_p_overfished, verbose = verbose))
   
-  cat("--------------------------------\n")
+  if (verbose) cat("--------------------------------\n")
 }
 # end the timer
+if (!verbose) cat("\n")
 Sys.time() - starttime
 
 # save output
