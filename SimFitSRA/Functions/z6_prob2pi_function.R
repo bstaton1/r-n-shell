@@ -1,4 +1,10 @@
 
+# inverse logit
+expit = function(x) {
+  exp(x)/(1 + exp(x))
+}
+
+# function to turn a vector of prob's to a vector of pi's
 prob2pi = function(prob) {
   A = length(prob) + 1
   pi = numeric(A)
