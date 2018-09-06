@@ -6,6 +6,9 @@ load("Output/lme_summ")
 load("Output/param_summ")
 
 # load in the specialized plotting function
+.libPaths("C:/~/R/win-library/3.5")
+library(scales)
+
 source("Functions/z5_biplot_function.R")
 
 # extract true reference points for each iteration
@@ -30,5 +33,5 @@ biplot(x = lm_bias[,"U_MSY"], y = lme_bias[,"U_MSY"], xlab = "LM (U_MSY)", ylab 
 biplot(x = lm_bias[,"S_MSY"], y = lme_bias[,"S_MSY"], xlab = "LM (S_MSY)", ylab = "LME (S_MSY)", new_window = F)
 biplot(x = lm_bias[,"U_obj"], y = lme_bias[,"U_obj"], xlab = "LM (U_obj)", ylab = "LME (U_obj)", new_window = F)
 biplot(x = lm_bias[,"S_obj"], y = lme_bias[,"S_obj"], xlab = "LM (S_obj)", ylab = "LME (S_obj)", new_window = F)
-dev.off()
+junk = dev.off(); rm(junk)
 

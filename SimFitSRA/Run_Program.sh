@@ -23,7 +23,7 @@ echo "+++++++++++++++++++++++++++++++"
 echo "Compiling Output"
 Rscript CompileOutput.R
 echo "+++++++++++++++++++++++++++++++"
-echo "Create Plots"
+echo "Creating Plots"
 Rscript MakePlots.R
 echo "+++++++++++++++++++++++++++++++"
 echo " "
