@@ -6,26 +6,30 @@
 rm(list = ls(all = T))
 
 # handle command line arguments
-# args = commandArgs(trailingOnly = T)
-# seed = as.numeric(args[1])      # seed for this batch
-# nsim = as.numeric(args[2])      # number of random data sets ran for this batch
+args = commandArgs(trailingOnly = T)
+seed = as.numeric(args[1])      # seed for this batch
+nsim = as.numeric(args[2])      # number of random data sets ran for this batch
 
-seed = 1
-nsim = 2
+# or do it manually
+# seed = 1
+# nsim = 2
 
-set.seed(seed)     # set the random seed
+# set the random seed
+set.seed(seed)     
 
 # options
-write = F  # write output folders and files?
+write = T  # write output folders and files?
 P = F      # run JAGS in parallel? 
 
 out_main_folder = "Output"
 out_sub_folder = paste("Out", seed, sep = "")
 
 # LOAD PACKAGES
+.libPaths("C:/~/R/win-library/3.5")
+
 library(mvtnorm)
 library(R2OpenBUGS)
-library(R2jags)
+suppressMessages(library(R2jags))
 library(rjags)
 library(scales)
 
