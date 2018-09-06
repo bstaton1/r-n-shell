@@ -1,5 +1,5 @@
 ###################################################################################################
-######################### TIME SERIES METHOD SIMULATION MASTER FILE ###############################
+##### PROGRAM TO SIMULATION TEST REGRESSION-BASED SRA ESTIMATION METHODS FOR MIXED-STOCK CASES ####
 ###################################################################################################
 
 # CLEAR THE WORKSPACE
@@ -9,26 +9,20 @@ set.seed(4000)     # random seed
 
 out_main_folder = "Output"
 out_sub_folder = "Out1"
-nsim = 100
+nsim = 1
 
 # LOAD PACKAGES
 library(mvtnorm)
 library(R2OpenBUGS)
 library(R2jags)
 library(rjags)
-# library(gtools)
-# library(nlme)
 library(scales)
 
 # READ MY FUNCTIONS
-source("C:/Users/bas0041/Desktop/run_functions_source.R")
-
-# SET WORKING DIRECTORY
-working_dir = "C:/Users/bas0041/Dropbox/PhD Project/TSM Sim/Dev Version"
-setwd(working_dir)
+# source("C:/Users/bas0041/Desktop/run_functions_source.R")
 
 # READ IN FUNCTIONS FOR THIS ANALYSIS
-func_dir = paste(working_dir, "Functions", sep = "/")
+func_dir = paste(getwd(), "Functions", sep = "/")
 funcs = dir(func_dir)
 for (i in 1:length(funcs)) source(paste(func_dir, funcs[i], sep = "/"))
 
@@ -37,11 +31,10 @@ Umsy_post = samps[,substr(colnames(samps), 1, 4) == "Umsy"]
 Smsy_post = samps[,substr(colnames(samps), 1, 4) == "Smsy"]
 
 # OUTPUT DIRECTORY
-
-out_dir = paste(working_dir, out_main_folder, out_sub_folder, sep = "/")
+out_dir = paste(getwd(), out_main_folder, out_sub_folder, sep = "/")
 
 # create the main folder if it does not exist
-if(!dir.exists(paste(working_dir, out_main_folder, sep = "/"))) dir.create(paste(working_dir, out_main_folder, sep = "/"))
+if(!dir.exists(paste(getwd(), out_main_folder, sep = "/"))) dir.create(paste(working_dir, out_main_folder, sep = "/"))
 
 # create the sub folder if it does not exist
 if(!dir.exists(out_dir)) dir.create(out_dir)
