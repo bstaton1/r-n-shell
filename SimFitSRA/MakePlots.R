@@ -14,11 +14,11 @@ true = sapply(c("U_MSY", "S_MSY", "U_obj", "S_obj"),
 
 # extract simple regression estimates of reference points
 lm_ests = sapply(c("U_MSY", "S_MSY", "U_obj", "S_obj"),
-                 function(x) subset(lme_summ, param == x & method == "lm")[,"X50."])
+                 function(x) subset(lme_summ, (param == x & method == "lm") | (is.na(param) & method == "lm"))[,"X50."])
 
 # extract mixed effect regression estimates of reference points
 lme_ests = sapply(c("U_MSY", "S_MSY", "U_obj", "S_obj"),
-                  function(x) subset(lme_summ, param == x & method == "lme")[,"X50."])
+                  function(x) subset(lme_summ, (param == x & method == "lme") | (is.na(param) & method == "lm"))[,"X50."])
 
 # calculate bias
 lm_bias = (lm_ests - true)/true
