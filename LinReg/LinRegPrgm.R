@@ -6,7 +6,7 @@ n = as.numeric(args[1])      # sample size
 nsim = as.numeric(args[2])   # number of random data sets
 
 # read in functions
-source("Functions.R")
+source("../Functions.R")
 
 # file names
 datFileName = "SimData.txt"

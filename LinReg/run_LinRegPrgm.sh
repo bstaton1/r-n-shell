@@ -7,7 +7,7 @@ export PATH=${PATH}":/c/Program Files/R/R-3.5.0/bin"     # for my laptop
 # export PATH=${PATH}":/c/Program Files/R/R-X.X.X/bin"   # for some other user
 
 # ask for input
-
+echo "-------------------------------"
 echo "-------------------------------"
 echo "Please enter the number of simulations per sample size:"
 read nsim
@@ -46,3 +46,11 @@ done
 
 # run the output analysis script
 Rscript LinRegOutputAnalysis.R
+
+# delete the AllEstimates.txt
+rm AllEstimates.txt
+
+# print a completion message
+echo "Analysis complete and the directory has been cleaned of all intermediate files and subdirectories"
+echo "The results are in the files 'Slopes.pdf' and 'slope_boxplot.png'"
+echo "-------------------------------"
