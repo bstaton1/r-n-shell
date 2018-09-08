@@ -35,6 +35,7 @@ obs_filter = function(params, obs) {
     for (s in 1:length(age_comp_stocks)) {
       x_tas_obs_filtered[!NA_yrs[,age_comp_stocks[s]],,s] = x_tas_obs[!NA_yrs[,age_comp_stocks[s]],,age_comp_stocks[s]]
     }
+    # x_tas_obs_filtered[is.na(x_tas_obs_filtered)] = 0
     
     # return output
     list(
