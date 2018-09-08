@@ -129,8 +129,8 @@ mod = function() {
   
   # observe calendar year substock specific harvests
     # vectorized to avoid looping over many NAs (hence the i not s)
-  for (i in 1:Sobs_n) {
-    log_S[i] <- log(S[Sobs_t[i],Sobs_s[i]])
+  for (i in 1:S_obs_n) {
+    log_S[i] <- log(S[S_obs_t[i],S_obs_s[i]])
     S_obs[i] ~ dlnorm(log_S[i], tau_S_obs[Sobs_s[i]])
   }
   

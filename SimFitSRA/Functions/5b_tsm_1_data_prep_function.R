@@ -1,5 +1,5 @@
 
-tsm_data_prep = function(params, obs) {
+tsm_1_data_prep = function(params, obs) {
   
   output = with(append(params, obs), {
     
@@ -54,7 +54,7 @@ tsm_data_prep = function(params, obs) {
       
       # observed age comp states
       x_tas_obs = x_tas_obs,
-      ESS_ts = ESS_ts,
+      ESS_ts = apply(x_tas_obs, 3, rowSums),
       age_stocks = age_comp_stocks,
       n_age_stocks = length(age_comp_stocks),
       
