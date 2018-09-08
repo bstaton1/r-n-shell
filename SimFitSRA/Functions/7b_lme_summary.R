@@ -4,31 +4,24 @@
 # max_p_overfished = params$max_p_overfished
 # parallel = T
 
-lme_summary = function(post, max_p_overfished, i, parallel = T, verbose = T) {
+lme_summary = function(post, max_p_overfished, i, verbose = T) {
   
   # print message
   if(verbose) cat("  Summarizing LME Model Output", "\n", sep = "")
-  
-  # determine the appropriate summary function
-  if (parallel) {
-    summ = sort.post
-  } else {
-    summ = get.post
-  }
   
   # check if post is NULL. if TRUE, that means JAGS crashed.
   if (!is.null(post)) {
 
     # extract parameter summaries
-    alpha_summ_lm = t(summ(post, "alpha_lm["))
-    alpha_summ_lme = t(summ(post, "alpha_lme["))
-    beta_summ_lm = t(summ(post, "beta_lm["))
-    beta_summ_lme = t(summ(post, "beta_lme["))
+    alpha_summ_lm = t(get.post(post, "alpha_lm["))
+    alpha_summ_lme = t(get.post(post, "alpha_lme["))
+    beta_summ_lm = t(get.post(post, "beta_lm["))
+    beta_summ_lme = t(get.post(post, "beta_lme["))
     
-    alpha_post_lm = summ(post, "alpha_lm[", do.post = T)$posterior
-    alpha_post_lme = summ(post, "alpha_lme[", do.post = T)$posterior
-    beta_post_lm = summ(post, "beta_lm[", do.post = T)$posterior
-    beta_post_lme = summ(post, "beta_lme[", do.post = T)$posterior
+    alpha_post_lm = get.post(post, "alpha_lm[", do.post = T)$posterior
+    alpha_post_lme = get.post(post, "alpha_lme[", do.post = T)$posterior
+    beta_post_lm = get.post(post, "beta_lm[", do.post = T)$posterior
+    beta_post_lme = get.post(post, "beta_lme[", do.post = T)$posterior
     
     # calculate bgr convergence diagnostic
     ns = ncol(alpha_post_lm)

@@ -6,9 +6,9 @@
 rm(list = ls(all = T))
 
 # handle command line arguments
-args = commandArgs(trailingOnly = T)
-seed = as.numeric(args[1])      # seed for this batch
-nsim = as.numeric(args[2])      # number of random data sets ran for this batch
+# args = commandArgs(trailingOnly = T)
+# seed = as.numeric(args[1])      # seed for this batch
+# nsim = as.numeric(args[2])      # number of random data sets ran for this batch
 
 # or do it manually
 # seed = 1
@@ -19,8 +19,8 @@ set.seed(seed)
 
 # options
 write = T   # write output folders and files?
-P = F       # run JAGS in parallel? 
-verbose = F # print progress messages?
+P = T       # run JAGS in parallel? 
+verbose = T # print progress messages?
 out_main_folder = "Output"
 out_sub_folder = paste("Out", seed, sep = "")
 
@@ -29,8 +29,9 @@ out_sub_folder = paste("Out", seed, sep = "")
 
 library(mvtnorm)
 library(R2OpenBUGS)
-suppressMessages(library(R2jags))
-library(rjags)
+# suppressMessages(library(R2jags))
+library(jagsUI)
+# library(rjags)
 library(scales)
 
 # READ IN FUNCTIONS FOR THIS ANALYSIS
@@ -89,7 +90,7 @@ for (i in 1:nsim) {
 
   # step 5: obtain summaries and save output
   params_summ = rbind(params_summ, params_summary(params = params, i = i))
-  lme_summ = rbind(lme_summ, lme_summary(parallel = P, post = lme_post, i = i, max_p_overfished = params$max_p_overfished, verbose = verbose))
+  lme_summ = rbind(lme_summ, lme_summary(post = lme_post, i = i, max_p_overfished = params$max_p_overfished, verbose = verbose))
   
   if (verbose) cat("--------------------------------\n")
 }
