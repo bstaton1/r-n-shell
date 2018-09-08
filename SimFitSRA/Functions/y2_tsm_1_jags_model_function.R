@@ -74,7 +74,7 @@ mod = function() {
       R[y,s] <- exp(log_R[y,s])
       log_resid[y,s] <- log_R[y,s] - log_R_mean1[y,s]
     }
-    R_tot[y] <- sum(R[y,1:ns])
+    # R_tot[y] <- sum(R[y,1:ns])
   }
   
   # maturity schedule
@@ -98,7 +98,7 @@ mod = function() {
       }
       N[t,s] <- sum(N_tas[t,1:na,s])
       S[t,s] <- N[t,s] * (1 - U[t] * v[s])
-      H[t,s] <- N[t,s] * (U[t] * v[s])
+      C[t,s] <- N[t,s] * (U[t] * v[s])
     }
   }
   
@@ -108,34 +108,37 @@ mod = function() {
     
     # N_tot[t] <- sum(N[t,1:ns])
     # S_tot[t] <- sum(S[t,1:ns])
-    H_tot[t] <- sum(H[t,1:ns])
+    C_tot[t] <- sum(C[t,1:ns])
   }
   
   # obtain calendar year age composition for each stock
-  for (s in 1:ns) {
+    # use i because not looping over all stocks - only those that have have comps
+  for (i in 1:n_age_stocks) {
     for (t in 1:nt) {
       for (a in 1:na) {
-        q[t,a,s] <- N_tas[t,a,s]/N[t,s]
+        q[t,a,i] <- N_tas[t,a,age_stocks[i]]/N[t,age_stocks[i]]
       }
     }
   }
   
   # observe calendar year total harvest 
   for (t in 1:nt) {
-    log_H_tot[t] <- log(H_tot[t])
-    H_tot_obs[t] ~ dlnorm(log_H_tot[t], tau_H[t])
+    log_C_tot[t] <- log(C_tot[t])
+    C_tot_t_obs[t] ~ dlnorm(log_C_tot[t], tau_C_obs)
   }
   
   # observe calendar year substock specific harvests
+    # vectorized to avoid looping over many NAs (hence the i not s)
   for (i in 1:Sobs_n) {
     log_S[i] <- log(S[Sobs_t[i],Sobs_s[i]])
-    S_obs[i] ~ dlnorm(log_S[i], tau_S[Sobs_s[i]])
+    S_obs[i] ~ dlnorm(log_S[i], tau_S_obs[Sobs_s[i]])
   }
   
   # observe age composition
-  for (s in 1:n_age_stocks) {
+    # only loop over stocks that have age comp data (hence the i not s)
+  for (i in 1:n_age_stocks) {
     for (t in 1:nt) {
-      x_array[t,1:na,age_stocks[s]] ~ dmulti(q[t,1:na,age_stocks[s]], n_mat[t,age_stocks[s]])
+      x_tas_obs[t,1:na,i] ~ dmulti(q[t,1:na,i], ESS_ts[t,i])
     }
   }
 }
