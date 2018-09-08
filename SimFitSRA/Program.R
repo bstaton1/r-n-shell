@@ -1,6 +1,18 @@
 ###################################################################################################
-##### PROGRAM TO SIMULATION TEST REGRESSION-BASED SRA ESTIMATION METHODS FOR MIXED-STOCK CASES ####
+##### PROGRAM TO SIMULATION-TEST REGRESSION-BASED SRA ESTIMATION METHODS FOR MIXED-STOCK CASES ####
 ###################################################################################################
+
+# this program is intended to be ran many times on separate computers, possibly a HPC
+# each time it is ran, it should use a different seed, provided through command line or manually here
+# it has the option to run more than one simulation
+
+# its main purpose is to call the functions in the analysis to:
+  # (1): generate true parameters of the salmon populations
+  # (2): simulate the populations for some number of years using true dynamics
+  # (3): simulate observing the populations under a given sampling regime
+  # (4): fit assessment model(s)
+  # (5): extract the results from the fitted model object
+  # (6): write the output to a new folder
 
 # CLEAR THE WORKSPACE
 rm(list = ls(all = T))
@@ -18,19 +30,22 @@ nsim = as.numeric(args[2])      # number of random data sets ran for this batch
 set.seed(seed)     
 
 # options
-write = T   # write output folders and files?
-P = F       # run JAGS in parallel? 
-verbose = F # print progress messages?
+write = T        # write output folders and files?
+P = T            # run JAGS in parallel? 
+verbose = T      # print progress messages (which step: fitting vs. processing)?
+jags_verbose = F # print progress messages from JAGS?
+
+# output directories
 out_main_folder = "Output"
 out_sub_folder = paste("Out", seed, sep = "")
 
 # LOAD PACKAGES
-.libPaths("C:/~/R/win-library/3.5")
+.libPaths("C:/~/R/win-library/3.5")  # where are they?
 
+library(coda)
 library(mvtnorm)
 library(R2OpenBUGS)
-suppressMessages(library(R2jags))
-library(rjags)
+suppressWarnings(suppressMessages(library(jagsUI, warn.conflicts = F)))
 library(scales)
 
 # READ IN FUNCTIONS FOR THIS ANALYSIS
@@ -38,6 +53,7 @@ func_dir = paste(getwd(), "Functions", sep = "/")
 funcs = dir(func_dir)
 for (i in 1:length(funcs)) source(paste(func_dir, funcs[i], sep = "/"))
 
+# READ IN SAMPLES OF LEADING PARAMETERS
 samps = read.csv("Umsy_Smsy_Kusko_posteriors.csv")
 Umsy_post = samps[,substr(colnames(samps), 1, 4) == "Umsy"]
 Smsy_post = samps[,substr(colnames(samps), 1, 4) == "Smsy"]
@@ -82,14 +98,14 @@ for (i in 1:nsim) {
   obs_out = gen_Rys_obs(params, obs_out)
 
   # step 4a: fit the lme/lm models
-  lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out, parallel = P, verbose = verbose)
+  lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out, parallel = P, verbose = verbose, jags_verbose = jags_verbose)
   
   # step 4b: fit the tsm model
   # put here when complete
 
   # step 5: obtain summaries and save output
   params_summ = rbind(params_summ, params_summary(params = params, i = i))
-  lme_summ = rbind(lme_summ, lme_summary(parallel = P, post = lme_post, i = i, max_p_overfished = params$max_p_overfished, verbose = verbose))
+  lme_summ = rbind(lme_summ, lme_summary(p_samp = 0.5, post = lme_post, i = i, max_p_overfished = params$max_p_overfished, verbose = verbose))
   
   if (verbose) cat("--------------------------------\n")
 }
@@ -100,5 +116,3 @@ Sys.time() - starttime
 # save output
 if (write) write.csv(params_summ, paste(out_dir, "param_summary.csv", sep = "/"), row.names = F)
 if (write) write.csv(lme_summ, paste(out_dir, "lme_summary.csv", sep = "/"), row.names = F)
-
-
