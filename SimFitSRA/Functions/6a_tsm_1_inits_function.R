@@ -1,4 +1,5 @@
-
+# attach(params)
+# attach(obs)
 tsm_1_gen_inits = function(params, obs, n_chains) {
   
   output = with(append(params, obs), {
@@ -12,8 +13,9 @@ tsm_1_gen_inits = function(params, obs, n_chains) {
       tmp_fit = lm(tmp_log_RPS ~ tmp_S)
       
       lm_alpha = c(lm_alpha, unname(exp(coef(tmp_fit)[1])))
-      lm_beta = c(lm_beta, unname(-coef(tmp_fit)[2]))
+      lm_beta = c(lm_beta, unname(abs(coef(tmp_fit)[2])))
     }
+    lm_alpha[lm_alpha <= 1] = 1.5
     lm_mgmt = get_lme_mgmt(alpha = lm_alpha, beta = lm_beta)
     
     # randomly perturb these n_chains times and store
