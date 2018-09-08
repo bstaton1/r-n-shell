@@ -1,4 +1,4 @@
-#A More Complex Problem
+# A More Complex Problem
 
 In this example, we assess the estimation performance of two assessment models for a mixed stock salmon system.
 
@@ -6,39 +6,33 @@ Essentially, we create a system where there are `ns` substocks driven by synchro
 
 The assessment models are fitted in JAGS, which is called via R. R is called via a shell script so that eventually this analysis can be ran on the Alabama Supercomputer. 
 
-The subrepository structure and description is as follows:
+**To run this program, you will need to have JAGS installed. Go [here](http://mcmc-jags.sourceforge.net/) for details. You will also need several R packages installed (found at the top of Program.R).**
 
-### Run_Program.sh
+## File Descriptions
 
 ---
+
+### Run_Program.sh
 
 This is a shell script that calls each of the R scripts described below. It runs Program.R through a loop and calls the other post processing scripts. It also prints progress messages to the console.
 
 ### Program.R
 
----
-
 This script is the one that calls the functions in `/Functions` to actually carry out the analysis. This script is intended to be ran many times, each time with a different seed. Each time it is sourced, it will perform `nsim` different iterations and write the output to a created directory `/Output/OutSeed`. 
 
 ### CompileOutput.R
-
----
 
 This script is sourced after Program.R is complete on all seeds. It pulls the estimates from the different `/Output/OutSeed` directories, combines them into fewer but larger data frames, then saves them as R objects the `/Output` directory. It deletes the individual `/Output/OutSeed` directories when it is complete.
 
 ### MakePlots.R
 
----
-
 This script is sourced after CompileOutput.R is complete. It reads in the saved R objects and makes plots that compare the relative bias of the two assessment methods.
 
 ### Umsy_Smsy_Kusko_posteriors.csv
 
----
-
 These are 1,000 samples from the joint posterior for 13 substocks in the Kuskokwim River in western Alaska. The program uses these samples to obtain the leading parameters for simulating the stock dynamics.
 
-### Functions
+## Functions
 
 ---
 
