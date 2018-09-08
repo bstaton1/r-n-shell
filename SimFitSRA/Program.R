@@ -105,7 +105,7 @@ for (i in 1:nsim) {
 
   # step 5: obtain summaries and save output
   params_summ = rbind(params_summ, params_summary(params = params, i = i))
-  lme_summ = rbind(lme_summ, lme_summary(post = lme_post, i = i, max_p_overfished = params$max_p_overfished, verbose = verbose, p_samp = 0.5))
+  lme_summ = rbind(lme_summ, lme_summary(p_samp = 0.5, post = lme_post, i = i, max_p_overfished = params$max_p_overfished, verbose = verbose))
   
   if (verbose) cat("--------------------------------\n")
 }
