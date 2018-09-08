@@ -16,6 +16,8 @@ The assessment models are fitted in JAGS, which is called via R. R is called via
 
 This is a shell script that calls each of the R scripts described below. It runs Program.R through a loop and calls the other post processing scripts. It also prints progress messages to the console.
 
+**Note:** You may need to change the location where your computer looks for R. This is found at the top of this script.
+
 ### Program.R
 
 This script is the one that calls the functions in `/Functions` to actually carry out the analysis. This script is intended to be ran many times, each time with a different seed. Each time it is sourced, it will perform `nsim` different iterations and write the output to a created directory `/Output/OutSeed`. 
