@@ -1,7 +1,7 @@
 # attach(params); attach(obs); attach(true)
 # detach(params); detach(obs); detach(true)
 
-fit_lme_model = function(params, true, obs, parallel = T, verbose = T) {
+fit_lme_model = function(params, true, obs, parallel = T, verbose = T, jags_verbose = F) {
   
   output = with(append(append(params, true), obs), {
     
@@ -35,7 +35,7 @@ fit_lme_model = function(params, true, obs, parallel = T, verbose = T) {
                      n.burnin = nb,
                      n.thin = n_thin,
                      parallel = parallel,
-                     verbose = F, save.model = F)
+                     verbose = jags_verbose, save.model = F)
         # ),
         # file = "JAGS_messages.txt", append = T
       # )
