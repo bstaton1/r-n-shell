@@ -1,5 +1,4 @@
-# attach(params)
-# attach(obs)
+
 tsm_1_gen_inits = function(params, obs, n_chains) {
   
   output = with(append(params, obs), {

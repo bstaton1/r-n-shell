@@ -75,6 +75,7 @@ starttime = Sys.time()
 # containers
 params_summ = NULL
 lme_summ = NULL
+tsm_summ = NULL
 for (i in 1:nsim) {
   if (verbose) {
     cat("Simulation #", i, "\n", sep = "")
@@ -101,11 +102,12 @@ for (i in 1:nsim) {
   lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out, parallel = P, verbose = verbose, jags_verbose = jags_verbose)
   
   # step 4b: fit the tsm model
-  # put here when complete
+  tsm_post = fit_tsm_1_model(params = params, true = pop_out, obs = obs_out, parallel = P, verbose = verbose, jags_verbose = jags_verbose)
 
   # step 5: obtain summaries and save output
   params_summ = rbind(params_summ, params_summary(params = params, i = i))
   lme_summ = rbind(lme_summ, lme_summary(p_samp = 0.5, post = lme_post, i = i, max_p_overfished = params$max_p_overfished, verbose = verbose))
+  tsm_summ = rbind(tsm_summ, tsm_1_summary(p_samp = 0.5, post = tsm_post, i = i, max_p_overfished = params$max_p_overfished, verbose = verbose))
   
   if (verbose) cat("--------------------------------\n")
 }
@@ -116,3 +118,4 @@ Sys.time() - starttime
 # save output
 if (write) write.csv(params_summ, paste(out_dir, "param_summary.csv", sep = "/"), row.names = F)
 if (write) write.csv(lme_summ, paste(out_dir, "lme_summary.csv", sep = "/"), row.names = F)
+if (write) write.csv(tsm_summ, paste(out_dir, "tsm_summary.csv", sep = "/"), row.names = F)
