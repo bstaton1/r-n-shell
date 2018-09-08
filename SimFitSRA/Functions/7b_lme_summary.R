@@ -4,7 +4,7 @@
 # max_p_overfished = params$max_p_overfished
 # parallel = T
 
-lme_summary = function(post, max_p_overfished, i, verbose = T) {
+lme_summary = function(post, max_p_overfished, i, verbose = T, p_samp = 1) {
   
   # print message
   if(verbose) cat("  Summarizing LME Model Output", "\n", sep = "")
@@ -32,18 +32,25 @@ lme_summary = function(post, max_p_overfished, i, verbose = T) {
     lm_bgr = c(lm_bgr, rep(NA, ns * 2 + 4))
     
     # calculate stock-specific reference points
-    ni = nrow(alpha_post_lm)
-    U_msy_post_lm = matrix(NA, ni, ns)
-    S_msy_post_lm = matrix(NA, ni, ns)
-    U_msy_post_lme = matrix(NA, ni, ns)
-    S_msy_post_lme = matrix(NA, ni, ns)
+    max_keep = 10000  # the maximum number of posterior samples to keep for dw brp calculations
+    
+    ntot = nrow(alpha_post_lm)
+    nkeep = min(ceiling(ntot * p_samp), max_keep)
+    
+    # indices of samples to keep
+    keep = sample(x = 1:ntot, size = nkeep, replace = F)
+    
+    U_msy_post_lm = matrix(NA, ntot, ns)
+    S_msy_post_lm = matrix(NA, ntot, ns)
+    U_msy_post_lme = matrix(NA, ntot, ns)
+    S_msy_post_lme = matrix(NA, ntot, ns)
     
     for (s in 1:ns) {
-      temp_lm_mgmt = get_lme_mgmt(alpha = alpha_post_lm[,s], beta = beta_post_lm[,s])
+      temp_lm_mgmt = get_lme_mgmt(alpha = alpha_post_lm[,s], beta = beta_post_lm[keep,s])
       U_msy_post_lm[,s] = temp_lm_mgmt$U_msy
       S_msy_post_lm[,s] = temp_lm_mgmt$S_msy
       
-      temp_lme_mgmt = get_lme_mgmt(alpha = alpha_post_lme[,s], beta = beta_post_lme[,s])
+      temp_lme_mgmt = get_lme_mgmt(alpha = alpha_post_lme[keep,s], beta = beta_post_lme[keep,s])
       U_msy_post_lme[,s] = temp_lme_mgmt$U_msy
       S_msy_post_lme[,s] = temp_lme_mgmt$S_msy
     }
@@ -54,18 +61,18 @@ lme_summary = function(post, max_p_overfished, i, verbose = T) {
     S_msy_summ_lm = t(apply(S_msy_post_lm, 2, post_summ, na.rm = T))
     
     # calculate drainage-wide reference points
-    mgmt_post_lme = matrix(NA, ni, 4); colnames(mgmt_post_lme) = c("S_obj", "U_obj", "S_MSY", "U_MSY")
-    mgmt_post_lm = matrix(NA, ni, 4); colnames(mgmt_post_lm) = c("S_obj", "U_obj", "S_MSY", "U_MSY")
-    for (j in 1:ni) {
+    mgmt_post_lme = matrix(NA, nkeep, 4); colnames(mgmt_post_lme) = c("S_obj", "U_obj", "S_MSY", "U_MSY")
+    mgmt_post_lm = matrix(NA, nkeep, 4); colnames(mgmt_post_lm) = c("S_obj", "U_obj", "S_MSY", "U_MSY")
+    for (j in 1:nkeep) {
       mgmt_post_lme[j,] = gen_mgmt(
-        params = list(alpha = alpha_post_lme[j,], beta = beta_post_lme[j,],
-                      U_msy = U_msy_post_lme[j,], S_msy = S_msy_post_lme[j,],
+        params = list(alpha = alpha_post_lme[keep[j],], beta = beta_post_lme[keep[j],],
+                      U_msy = U_msy_post_lme[keep[j],], S_msy = S_msy_post_lme[keep[j],],
                       U_range = seq(0,1,0.01), max_p_overfished = max_p_overfished, ns = ns)
       )$mgmt
       
       mgmt_post_lm[j,] = gen_mgmt(
-        params = list(alpha = alpha_post_lm[j,], beta = beta_post_lm[j,],
-                      U_msy = U_msy_post_lm[j,], S_msy = S_msy_post_lm[j,],
+        params = list(alpha = alpha_post_lm[keep[j],], beta = beta_post_lm[keep[j],],
+                      U_msy = U_msy_post_lm[keep[j],], S_msy = S_msy_post_lm[keep[j],],
                       U_range = seq(0,1,0.01), max_p_overfished = max_p_overfished, ns = ns)
       )$mgmt
     }
