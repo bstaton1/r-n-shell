@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# when ran on the HPC, include this
+# source /opt/asn/etc/asn-bash-profiles-special/modules.sh
+# module load R/3.3.3
+
 # simulation dimensions
 # seeds=(100 200 300 400 500 600 700 800 900 1000)
 seeds=(100 200)
