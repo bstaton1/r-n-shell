@@ -1,32 +1,20 @@
 #!/bin/bash
 
-# when ran on the HPC, include this
+# when ran on the HPC, include this to make R findable
 # source /opt/asn/etc/asn-bash-profiles-special/modules.sh
 # module load R/3.3.3
 
-# simulation dimensions
-# seeds=(100 200 300 400 500 600 700 800 900 1000)
-seeds=(100 200)
-nsim=1
+# get the date/time of the start of this script
+d=$(date)
 
-# loop through seeds and run the program using each one
-for seed in ${seeds[@]}
-do
-  echo "+++++++++++++++++++++++++++++++"
-  echo "Running Seed: $seed"
-  Rscript Program.R $seed $nsim
-done
+# $1 is the random seed provided by 1_Run_Analysis.sh
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo "Running Iteration with Seed: $1"
+echo "  Started running at: $d"
+Rscript 3_SimFit.R $1
 
-echo "+++++++++++++++++++++++++++++++"
-echo "Compiling Output"
-Rscript CompileOutput.R
-echo "+++++++++++++++++++++++++++++++"
-echo "Creating Plots"
-Rscript MakePlots.R
-echo "+++++++++++++++++++++++++++++++"
-echo "Zipping files"
-tar -cvzf Output.tar.gz Output
-echo "+++++++++++++++++++++++++++++++"
-echo " "
+# print the end date and time of this script
+d=$(date)
+echo "  Ended running at:   $d"
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++"
 
-echo "Analysis done."
