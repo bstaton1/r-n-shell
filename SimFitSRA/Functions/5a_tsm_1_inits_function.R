@@ -9,12 +9,28 @@ tsm_1_gen_inits = function(params, obs, n_chains) {
     for (s in 1:ns) {
       tmp_S = lm_data$S_obs[lm_data$stock == s]
       tmp_log_RPS = lm_data$obs_log_RPS_lm[lm_data$stock == s]
-      tmp_fit = lm(tmp_log_RPS ~ tmp_S)
       
-      lm_alpha = c(lm_alpha, unname(exp(coef(tmp_fit)[1])))
-      lm_beta = c(lm_beta, unname(abs(coef(tmp_fit)[2])))
+      tmp_fit = tryCatch({
+        lm(tmp_log_RPS ~ tmp_S)
+      }, error = function(e) NA)
+      
+      if (is.na(tmp_fit)) {
+        lm_alpha = c(lm_alpha, NA)
+        lm_beta = c(lm_beta, NA)
+      } else {
+        lm_alpha = c(lm_alpha, unname(exp(coef(tmp_fit)[1])))
+        lm_beta = c(lm_beta, unname(abs(coef(tmp_fit)[2])))
+      }
     }
+    
+    # fix very small alpha values
     lm_alpha[lm_alpha <= 1] = 1.5
+    
+    # replace NAs with the mean of the others
+    lm_alpha[is.na(lm_alpha)] = mean(lm_alpha, na.rm = T)
+    lm_beta[is.na(lm_beta)] = mean(lm_beta, na.rm = T)
+    
+    # get the reference points of U_msy and S_msy
     lm_mgmt = get_lme_mgmt(alpha = lm_alpha, beta = lm_beta)
     
     # randomly perturb these n_chains times and store
