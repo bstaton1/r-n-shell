@@ -34,6 +34,12 @@ write = T        # write output folders and files?
 P = T            # run JAGS in parallel? 
 verbose = T      # print progress messages (which step: fitting vs. processing)?
 jags_verbose = F # print progress messages from JAGS?
+lme_p_samp = 0.5 # proportion of MCMC samples used in dw brp calcs for lme model
+tsm_p_samp = 1   # proportion of MCMC samples used in dw brp calcs for tsm model
+
+# mcmc dimensions
+lme_dims = c(ni = 5000, nb = 500, nt = 1, nc = 2, na = 1000)
+tsm_dims = c(ni = 200, nb = 50, nt = 1, nc = 3, na = 200)
 
 # output directories
 out_main_folder = "Output"
@@ -71,7 +77,6 @@ if(!dir.exists(out_dir) & write) dir.create(out_dir)
 
 # start a timer
 starttime = Sys.time()
-# i = 1
 
 # containers
 params_summ = NULL
@@ -100,15 +105,20 @@ for (i in 1:nsim) {
   obs_out = gen_Rys_obs(params, obs_out)
 
   # step 4a: fit the lme/lm models
-  lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out, parallel = P, verbose = verbose, jags_verbose = jags_verbose)
+  lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out,
+                           dims = lme_dims, parallel = P,
+                           verbose = verbose, jags_verbose = jags_verbose)
   
   # step 4b: fit the tsm model
-  tsm_post = fit_tsm_1_model(params = params, true = pop_out, obs = obs_out, parallel = P, verbose = verbose, jags_verbose = jags_verbose)
+  tsm_inits = tsm_1_gen_inits(params = params, obs = obs_out, n_chains = tsm_dims["nc"])
+  tsm_post = fit_tsm_1_model(params = params, true = pop_out, obs = obs_out, inits = tsm_inits,
+                             dims = tsm_dims, parallel = P,
+                             verbose = verbose, jags_verbose = jags_verbose)
 
   # step 5: obtain summaries and save output
   params_summ = rbind(params_summ, params_summary(params = params, i = i))
-  lme_summ = rbind(lme_summ, lme_summary(p_samp = 0.5, post = lme_post, i = i, max_p_overfished = params$max_p_overfished, verbose = verbose))
-  tsm_summ = rbind(tsm_summ, tsm_1_summary(p_samp = 0.5, post = tsm_post, i = i, max_p_overfished = params$max_p_overfished, verbose = verbose))
+  lme_summ = rbind(lme_summ, lme_summary(p_samp = lme_p_samp, post = lme_post, i = i, max_p_overfished = params$max_p_overfished, verbose = verbose))
+  tsm_summ = rbind(tsm_summ, tsm_1_summary(p_samp = tsm_p_samp, post = tsm_post, i = i, max_p_overfished = params$max_p_overfished, verbose = verbose))
   
   if (verbose) cat("--------------------------------\n")
 }

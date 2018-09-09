@@ -21,7 +21,11 @@ tsm_1_gen_inits = function(params, obs, n_chains) {
     inits = list()
     for (i in 1:n_chains) {
       inits[[i]] = list(
-        U_msy = sapply(lm_mgmt$U_msy, function(x) implement_error(U_target = x, SUM = 100)),
+        U_msy = sapply(lm_mgmt$U_msy, function(x) {
+          y = implement_error(U_target = x, SUM = 100)
+          ifelse (y < 0.1, 0.15, y)
+        }),
+          
         log_S_msy = log(rlnorm(ns, log(lm_mgmt$S_msy), 0.1)),
         log_R = apply(R_ys_obs, 2, function(x) { # loop over stocks
           mu = mean(x, na.rm = T)   # calculate mean when available
