@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # when ran on the HPC, include this to make R findable
-# source /opt/asn/etc/asn-bash-profiles-special/modules.sh
-# module load R/3.3.3
+source /opt/asn/etc/asn-bash-profiles-special/modules.sh
+module load R/3.3.3
 
 # get the date/time of the start of this script
 d=$(date)
