@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# when ran on the HPC, include this to make R findable
+# source /opt/asn/etc/asn-bash-profiles-special/modules.sh
+# module load R/3.3.3
+
 seeds=(1 2 3 4 5)
 
 echo "############################################"
