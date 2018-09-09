@@ -46,7 +46,7 @@ out_main_folder = "Output"
 out_sub_folder = paste("Out", seed, sep = "")
 
 # LOAD PACKAGES
-.libPaths("C:/~/R/win-library/3.5")  # where are they?
+# .libPaths("C:/~/R/win-library/3.5")  # where are they?
 
 library(coda)
 library(mvtnorm)
