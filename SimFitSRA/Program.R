@@ -71,6 +71,7 @@ if(!dir.exists(out_dir) & write) dir.create(out_dir)
 
 # start a timer
 starttime = Sys.time()
+# i = 1
 
 # containers
 params_summ = NULL

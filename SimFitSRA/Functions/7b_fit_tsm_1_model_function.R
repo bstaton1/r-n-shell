@@ -9,7 +9,7 @@ fit_tsm_1_model = function(params, true, obs, parallel = T, verbose = T, jags_ve
     jags_dat = tsm_1_data_prep(params = params, obs = obs)
     
     ### MCMC DIMENSIONS ###
-    ni = 10
+    ni = 100
     nb = 10
     n_thin = 1
     n_chains = 3

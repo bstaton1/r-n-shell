@@ -28,10 +28,10 @@ for (i in 1:length(out_sub_folders)) {
   # append the previous output file with the temporary ones
   param_summ = rbind(param_summ, param_tmp)
   lme_summ = rbind(lme_summ, lme_tmp)
-  tsm_summ = rbind(tsm_summ, lme_tmp)
+  tsm_summ = rbind(tsm_summ, tsm_tmp)
   
   # delete the intermediate files
-  unlink(x = paste(out_main_dir, out_sub_folders[i], sep = "/"), recursive = T)
+  # unlink(x = paste(out_main_dir, out_sub_folders[i], sep = "/"), recursive = T)
 }
 
 # max(params_summ$iter)
