@@ -39,6 +39,6 @@ lme_jags_mod = function() {
   }
 }
 
-lme_model_file = "lme_model.txt"
+lme_model_file = "Model Files/lme_model.txt"
 write.model(lme_jags_mod, lme_model_file)
 

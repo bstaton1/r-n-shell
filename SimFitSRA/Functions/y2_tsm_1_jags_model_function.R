@@ -143,5 +143,5 @@ mod = function() {
   }
 }
 
-model.file = "tsm_model_1.txt"
+model.file = "Model Files/tsm_model_1.txt"
 write.model(mod, model.file)
