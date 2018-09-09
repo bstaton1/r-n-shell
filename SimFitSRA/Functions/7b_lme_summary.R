@@ -4,7 +4,7 @@
 # max_p_overfished = params$max_p_overfished
 # parallel = T
 
-lme_summary = function(post, max_p_overfished, i, verbose = T, p_samp = 1) {
+lme_summary = function(post, max_p_overfished, seed, verbose = T, p_samp = 1) {
   
   # print message
   if(verbose) cat("  Summarizing LME Model Output", "\n", sep = "")
@@ -83,7 +83,7 @@ lme_summary = function(post, max_p_overfished, i, verbose = T, p_samp = 1) {
     # combine lme output
     lme_ests = rbind(alpha_summ_lme, beta_summ_lme, U_msy_summ_lme, S_msy_summ_lme); rownames(lme_ests) = NULL
     lme_ests = rbind(lme_ests, mgmt_summ_lme); rownames(lme_ests) = NULL
-    lme_id = data.frame(iter = i, 
+    lme_id = data.frame(seed = seed, 
                         param = c(rep(c("alpha", "beta", "U_msy", "S_msy"), each = ns), "S_obj", "U_obj", "S_MSY", "U_MSY"),
                         stock = c(rep(1:ns, 4), rep(NA, 4)),
                         method = "lme")
@@ -93,7 +93,7 @@ lme_summary = function(post, max_p_overfished, i, verbose = T, p_samp = 1) {
     # combine lm output
     lm_ests = rbind(alpha_summ_lm, beta_summ_lm, U_msy_summ_lm, S_msy_summ_lm); rownames(lm_ests) = NULL
     lm_ests = rbind(lm_ests, mgmt_summ_lm); rownames(lm_ests) = NULL
-    lm_id = data.frame(iter = i, 
+    lm_id = data.frame(seed = seed, 
                        param = c(rep(c("alpha", "beta", "U_msy", "S_msy"), each = ns), "S_obj", "U_obj", "S_MSY", "U_MSY"),
                        stock = c(rep(1:ns, 4), rep(NA, 4)),
                        method = "lm")
@@ -105,7 +105,7 @@ lme_summary = function(post, max_p_overfished, i, verbose = T, p_samp = 1) {
     
   } else {
     
-    output = data.frame(iter = i, param = NA, stock = NA,
+    output = data.frame(seed = seed, param = NA, stock = NA,
                         method = c("lme", "lm"), mean = NA, sd = NA, 
                         x1 = NA, x2 = NA, x3 = NA)
     

@@ -4,7 +4,7 @@
 # max_p_overfished = params$max_p_overfished
 # parallel = T
 
-tsm_1_summary = function(post, max_p_overfished, i, verbose = T, p_samp = 1) {
+tsm_1_summary = function(post, max_p_overfished, seed, verbose = T, p_samp = 1) {
   
   # print message
   if(verbose) cat("  Summarizing TSM Model #1 Output", "\n", sep = "")
@@ -53,7 +53,7 @@ tsm_1_summary = function(post, max_p_overfished, i, verbose = T, p_samp = 1) {
     # combine lme output
     ests = rbind(alpha_summ, beta_summ, U_msy_summ, S_msy_summ); rownames(ests) = NULL
     ests = rbind(ests, mgmt_summ); rownames(ests) = NULL
-    id = data.frame(iter = i, 
+    id = data.frame(seed = seed, 
                     param = c(rep(c("alpha", "beta", "U_msy", "S_msy"), each = ns), "S_obj", "U_obj", "S_MSY", "U_MSY"),
                     stock = c(rep(1:ns, 4), rep(NA, 4)),
                     method = "tsm")
@@ -64,7 +64,7 @@ tsm_1_summary = function(post, max_p_overfished, i, verbose = T, p_samp = 1) {
     
   } else {
     
-    output = data.frame(iter = i, param = NA, stock = NA,
+    output = data.frame(seed = seed, param = NA, stock = NA,
                         method = c("tsm"), mean = NA, sd = NA, 
                         x1 = NA, x2 = NA, x3 = NA)
     

@@ -1,6 +1,6 @@
 # attach(params)
 
-params_summary = function(params, i) {
+params_summary = function(params, seed) {
   
   output = with(params, {
     
@@ -10,7 +10,7 @@ params_summary = function(params, i) {
     dw = unname(gen_mgmt(params = params)$mgmt[c("S_obj", "U_obj", "U_MSY", "S_MSY")])
     v = c(v, dw)
     
-    data.frame(iter = i, stock = s, param = p, value = v)
+    data.frame(seed = seed, stock = s, param = p, value = v)
     
   })
   
