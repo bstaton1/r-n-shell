@@ -12,9 +12,9 @@ tsm_1_gen_inits = function(params, obs, n_chains) {
       
       tmp_fit = tryCatch({
         lm(tmp_log_RPS ~ tmp_S)
-      }, error = function(e) NA)
+      }, error = function(e) NULL)
       
-      if (is.na(tmp_fit)) {
+      if (is.null(tmp_fit)) {
         lm_alpha = c(lm_alpha, NA)
         lm_beta = c(lm_beta, NA)
       } else {
