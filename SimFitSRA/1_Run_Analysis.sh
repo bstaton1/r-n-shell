@@ -16,6 +16,7 @@ echo " "
 echo "Seeds to use: ${seeds[@]}"
 echo " "
 
+# loop through seeds: create an executable unique seed script for each one
 for seed in ${seeds[@]}
 do
   # create a copy of 2_Run_SimFit.sh with the third line changed to the $seed variable
@@ -23,10 +24,14 @@ do
   
   # make the new file executable
   chmod +x 2_Run_SimFit_$seed.sh
-  
+done
+
+# loop through seeds: execute seed-specific programs
+for seed in ${seeds[@]}
+do
   # execute the temporary verison with specific seed
-  # sh 2_Run_SimFit_$seed.sh
-  run_script 2_Run_SimFit_$seed.sh
+  sh 2_Run_SimFit_$seed.sh
+  # run_script 2_Run_SimFit_$seed.sh
   
   # delete the temporary file
   rm 2_Run_SimFit_$seed.sh
