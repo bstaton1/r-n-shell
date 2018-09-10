@@ -12,25 +12,29 @@ The assessment models are fitted in `JAGS`, which is called via `R`. `R` is call
 
 ---
 
-### Run_Program.sh
+### `1_Run_Analysis.sh`
 
-This is a shell script that calls each of the R scripts described below. It runs Program.R through a loop and calls the other post processing scripts. It also prints progress messages to the console.
+This is a shell script that distributes multiple unique instances of `2_Run_SimFit.sh` to different HPC nodes. Each instance uses a newly copied version of `2_Run_SimFit.sh` with the seed uniquely altered using `awk`. It will eventually also run the Compilation scripts and the Plotting scripts, but these are not yet complete.
 
-**Note:** You may need to change the location where your computer looks for R. This is found at the top of this script.
+**Note:** You may need to change the location where your computer looks for R. This is found at the top of this script. It is currently set for my HPC account.
 
-### Program.R
+### `2_Run_SimFit.sh`
 
-This script is the one that calls the functions in `/Functions` to actually carry out the analysis. This script is intended to be ran many times, each time with a different seed. Each time it is sourced, it will perform `nsim` different iterations and write the output to a created directory `/Output/OutSeed`. 
+This script calls one instance of `3_SimFit.R` with the unique seed passed to it from `1_Run_Analysis.sh`. 
 
-### CompileOutput.R
+### `3_SimFit.sh`
 
-This script is sourced after Program.R is complete on all seeds. It pulls the estimates from the different `/Output/OutSeed` directories, combines them into fewer but larger data frames, then saves them as R objects the `/Output` directory. It deletes the individual `/Output/OutSeed` directories when it is complete.
+This script calls all of the R code to complete one iteration of the simulation/estimation exercise.
 
-### MakePlots.R
+### `4_CompileOutput.R`
 
-This script is sourced after CompileOutput.R is complete. It reads in the saved R objects and makes plots that compare the relative bias of the two assessment methods.
+This script is intended to be sourced after all seed-specific simulations are complete. It pulls the estimates from the different newly created `/Output` directory, combines them into fewer but larger data frames, then saves them as R objects the `/Output` directory. It deletes the individual seed-specific output files when it is complete.
 
-### Umsy_Smsy_Kusko_posteriors.csv
+### `5_MakePlots.R`
+
+This script is sourced after `4_CompileOutput.R` is complete. It reads in the saved R objects and makes plots that compare the relative bias of the fitted assessment methods.
+
+### `Umsy_Smsy_Kusko_posteriors.csv`
 
 These are 1,000 samples from the joint posterior for 13 substocks in the Kuskokwim River in western Alaska. The program uses these samples to obtain the leading parameters for simulating the stock dynamics.
 
