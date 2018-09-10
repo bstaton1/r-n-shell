@@ -21,6 +21,9 @@ do
   # create a copy of 2_Run_SimFit.sh with the third line changed to the $seed variable
   awk 'NR==3 {$0="seed="'$seed'""} { print }' 2_Run_SimFit.sh > 2_Run_SimFit_$seed.sh
   
+  # make the new file executable
+  chmod +x 2_Run_SimFit_$seed.sh
+  
   # execute the temporary verison with specific seed
   # sh 2_Run_SimFit_$seed.sh
   run_script 2_Run_SimFit_$seed.sh
