@@ -4,7 +4,7 @@ In this example, we assess the estimation performance of several assessment mode
 
 Essentially, we create a system where there are `ns` substocks driven by synchronous Ricker spawner-recruit dynamics and fished with a constant exploitation rate with a good amount of implementation error. We then observe the states the substocks took on (for some substocks more than others) and fit three assessment models. In this case, the three models are (1) `ns` simple linear regression models fitted to each substock independently, (2) one linear mixed effects model with random intercepts for individual substocks, and (3) a fairly complex time series model that more realistically captures the population dynamics. The final goal is to compare the performance of even more complex versions of model (3) to determine an appropriate level of model complexity for this problem.
 
-The assessment models are fitted in `JAGS`, which is called via `R`. `R` is called via a shell script (`Run_Program.sh`) so that eventually this analysis can be ran on the Alabama Supercomputer. 
+The assessment models are fitted in `JAGS`, which is called via `R`, which is called via a series of shell scripts so this analysis can be ran on the Alabama Supercomputer. 
 
 **To run this program, you will need to have JAGS installed. Go [here](http://mcmc-jags.sourceforge.net/) for details. You will also need several R packages installed (found at the top of Program.R).**
 
@@ -14,7 +14,7 @@ The assessment models are fitted in `JAGS`, which is called via `R`. `R` is call
 
 ### `1_Run_Analysis.sh`
 
-This is a shell script that distributes multiple unique instances of `2_Run_SimFit.sh` to different HPC nodes. Each instance uses a newly copied version of `2_Run_SimFit.sh` with the seed uniquely altered using `awk`. It will eventually also run the Compilation scripts and the Plotting scripts, but these are not yet complete.
+This is a shell script that distributes multiple unique instances of `2_Run_SimFit.sh` to different HPC nodes. Each instance uses a newly copied version of `2_Run_SimFit.sh` with the seed uniquely altered using `awk`. It will eventually also hopefully run the `4_CompileOutput.R` script and the `5_MakePlots.R` script, but these are not yet complete.
 
 **Note:** You may need to change the location where your computer looks for R. This is found at the top of this script. It is currently set for my HPC account.
 
