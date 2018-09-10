@@ -27,11 +27,16 @@ do
   chmod +x 2_Run_SimFit_$seed.sh
 
   # execute the temporary verison with specific seed
-  sh 2_Run_SimFit_$seed.sh
-  # run_script 2_Run_SimFit_$seed.sh
+  # sh 2_Run_SimFit_$seed.sh
+  run_script 2_Run_SimFit_$seed.sh
   
-  # delete the temporary file
-  rm 2_Run_SimFit_$seed.sh
+  # sleep for a minute between iterations of run_script
+  # only if this isn't the last one
+  if [ $seed -lt ${seeds[-1]} ]
+  then
+    sleep 60
+  fi
+  
 done
 
 # somehow wait to execute these lines until all instances are complete
