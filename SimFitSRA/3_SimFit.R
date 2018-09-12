@@ -108,7 +108,7 @@ tsm_post = fit_tsm_1_model(params = params, true = pop_out, obs = obs_out, inits
 # step 5b: summarize the tsm model
 tsm_summ = tsm_1_summary(p_samp = tsm_p_samp, post = tsm_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
 end = Sys.time(); time_tsm = round(as.numeric(end - start, units = "hours"), 2)
-if (time_verbose) cat("    Hours Elapsed: ", time_lme, "; Total Hours Elapsed: ", time_initial + time_lme + time_tsm, "\n", sep = "")
+if (time_verbose) cat("    Hours Elapsed: ", time_tsm, "; Total Hours Elapsed: ", time_initial + time_lme + time_tsm, "\n", sep = "")
 
 # step 6: obtain summaries and save output
 params_summ = params_summary(params = params, seed = seed)
