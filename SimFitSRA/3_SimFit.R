@@ -37,14 +37,12 @@ P = T            # run JAGS in parallel?
 verbose = T      # print progress messages (which step: fitting vs. processing)?
 jags_verbose = F # print progress messages from JAGS?
 time_verbose = T # print progress messages from the time on each step?
-lme_p_samp = 1   # proportion of MCMC samples used in dw brp calcs for lme model
-tsm_p_samp = 1   # proportion of MCMC samples used in dw brp calcs for tsm model
 
 # mcmc dimensions
-lme_dims = c(ni = 5000, nb = 1000, nt = 1, nc = 2, na = 1000)
-tsm_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
-# lme_dims = c(ni = 10000, nb = 2000, nt = 2, nc = 2, na = 1000)
-# tsm_dims = c(ni = 100000, nb = 1000, nt = 30, nc = 3, na = 1000)
+# lme_dims = c(ni = 5000, nb = 1000, nt = 1, nc = 2, na = 1000)
+# tsm_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
+lme_dims = c(ni = 10000, nb = 2000, nt = 2, nc = 2, na = 1000)
+tsm_dims = c(ni = 100000, nb = 1000, nt = 30, nc = 3, na = 1000)
 
 # output directories
 out_folder = "Output"
@@ -106,7 +104,7 @@ if (time_verbose) cat("    Hours Elapsed: ", time_lme_fit, "; Total Hours Elapse
 
 # step 4b: summarize and export the estimates from the lme/lm models
 start = Sys.time()
-lme_summ = lme_summary(p_samp = lme_p_samp, post = lme_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
+lme_summ = lme_summary(post = lme_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
 if (write) write.csv(lme_summ, paste(out_dir, fileName("lme_summary", seed, ".csv"), sep = "/"), row.names = F)
 end = Sys.time(); time_lme_summ = round(as.numeric(end - start, units = "hours"), 2)
 ctime = sum(c(time_initial, time_lme_fit, time_lme_summ))
@@ -123,7 +121,7 @@ ctime = sum(c(time_initial, time_lme_fit, time_lme_summ, time_tsm_fit))
 if (time_verbose) cat("    Hours Elapsed: ", time_tsm_fit, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
 
 # step 5b: summarize and export the estimates from the tsm model
-tsm_summ = tsm_1_summary(p_samp = tsm_p_samp, post = tsm_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
+tsm_summ = tsm_1_summary(post = tsm_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
 if (write) write.csv(tsm_summ, paste(out_dir, fileName("tsm_summary", seed, ".csv"), sep = "/"), row.names = F)
 end = Sys.time(); time_tsm_summ = round(as.numeric(end - start, units = "hours"), 2)
 ctime = sum(c(time_initial, time_lme_fit, time_lme_summ, time_tsm_fit, time_tsm_summ))

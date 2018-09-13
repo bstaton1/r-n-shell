@@ -4,7 +4,7 @@
 # max_p_overfished = params$max_p_overfished
 # parallel = T
 
-tsm_1_summary = function(post, max_p_overfished, seed, verbose = T, p_samp = 1) {
+tsm_1_summary = function(post, max_p_overfished, seed, verbose = T) {
   
   # print message
   if(verbose) cat("  Summarizing TSM Model #1 Output", "\n", sep = "")
@@ -23,20 +23,16 @@ tsm_1_summary = function(post, max_p_overfished, seed, verbose = T, p_samp = 1) 
     U_msy_post = get.post(post, "U_msy[", do.post = T)$posterior
     S_msy_post = get.post(post, "S_msy[", do.post = T)$posterior
     
-    # calculate bgr convergence diagnostic
-    ns = ncol(alpha_post)
-    bgr = gelman.diag(post, multivariate = F)[[1]]
-    bgr = bgr[c(rownames(alpha_summ), rownames(beta_summ), rownames(U_msy_summ), rownames(S_msy_summ)),"Point est."]
-    bgr = c(bgr, rep(NA, 4))
-    
     # calculate stock-specific reference points
-    max_keep = 10000  # the maximum number of posterior samples to keep for dw brp calculations
+    # max_keep = 10000  # the maximum number of posterior samples to keep for dw brp calculations
     
+    ns = ncol(alpha_post)
     ntot = nrow(alpha_post)
-    nkeep = min(ceiling(ntot * p_samp), max_keep)
+    # nkeep = min(ntot, max_keep)
+    nkeep = ntot
     
     # indices of samples to keep
-    keep = sample(x = 1:ntot, size = nkeep, replace = F)
+    keep = sort(sample(x = 1:ntot, size = nkeep, replace = F))
     
     # calculate drainage-wide reference points
     mgmt_post = matrix(NA, nkeep, 4); colnames(mgmt_post) = c("S_obj", "U_obj", "S_MSY", "U_MSY")
@@ -50,7 +46,18 @@ tsm_1_summary = function(post, max_p_overfished, seed, verbose = T, p_samp = 1) 
     
     mgmt_summ = t(apply(mgmt_post, 2, post_summ))
     
-    # combine lme output
+    # get bgr and ess diagnostic
+    new_post = mat2mcmc.list(
+      mat = cbind(alpha_post, beta_post,
+                  U_msy_post, S_msy_post,
+                  mgmt_post),
+      chains = as.matrix(post, chains = T)[,"CHAIN"]
+    )
+    
+    bgr = gelman.diag(new_post, multivariate = F)[[1]][,"Point est."]
+    ess = effectiveSize(new_post)
+    
+    # combine output
     ests = rbind(alpha_summ, beta_summ, U_msy_summ, S_msy_summ); rownames(ests) = NULL
     ests = rbind(ests, mgmt_summ); rownames(ests) = NULL
     id = data.frame(seed = seed, 
@@ -58,7 +65,7 @@ tsm_1_summary = function(post, max_p_overfished, seed, verbose = T, p_samp = 1) 
                     stock = c(rep(1:ns, 4), rep(NA, 4)),
                     method = "tsm")
     ests = cbind(id, ests)
-    ests = cbind(ests, bgr = bgr)
+    ests = cbind(ests, bgr = bgr, ess = ess)
     
     output = ests
     
@@ -70,10 +77,11 @@ tsm_1_summary = function(post, max_p_overfished, seed, verbose = T, p_samp = 1) 
     
     colnames(output)[(ncol(output) - 2):ncol(output)] = c("50%", "2.5%", "97.5%")
     output$bgr = NA
+    output$ess = NA
   }
   
+  rownames(output) = NULL
   
   return(output)
   
 }
-

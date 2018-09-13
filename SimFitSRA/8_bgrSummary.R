@@ -5,13 +5,13 @@ load("Output/lme_summ")
 
 source("Functions/z9_bgr_summ_function.R")
 
-cat("TSM #1:\n")
-bgr_summ(summ = tsm_summ, vars = c("alpha", "beta", "U_msy", "S_msy"))
+cat("\nTSM #1:")
+bgr_summ(summ = tsm_summ, vars = c("alpha", "beta", "U_msy", "S_msy", "U_MSY", "S_MSY", "U_obj", "S_obj"))
 
-cat("\nLM:\n")
-bgr_summ(summ = subset(lme_summ, method == "lm"), vars = c("alpha", "beta"))
+cat("\nLM:")
+bgr_summ(summ = subset(lme_summ, method == "lm"), vars = c("alpha", "beta", "U_msy", "S_msy", "U_MSY", "S_MSY", "U_obj", "S_obj"))
 
-cat("LME:\n")
-bgr_summ(summ = subset(lme_summ, method == "lme"), vars = c("alpha", "beta"))
+cat("\nLME:")
+bgr_summ(summ = subset(lme_summ, method == "lme"), vars = c("alpha", "beta", "U_msy", "S_msy", "U_MSY", "S_MSY", "U_obj", "S_obj"))
 
 
