@@ -85,18 +85,25 @@ obs_out = obs_filter(params = params, obs = obs_out)
 # step 3c: obtain observed brood year states
 obs_out = gen_Rys_obs(params, obs_out)
 end = Sys.time(); time_initial = round(as.numeric(end - start, units = "hours"), 2)
-if (time_verbose) cat("    Hours Elapsed: ", time_initial, "; Total Hours Elapsed: ", time_initial, "\n", sep = "")
+ctime = time_initial
+if (time_verbose) cat("    Hours Elapsed: ", time_initial, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
 
 # step 4a: fit the lme/lm models
 start = Sys.time()
 lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out,
                          dims = lme_dims, parallel = P,
                          verbose = verbose, jags_verbose = jags_verbose)
-# step 4b: summarize the lme/lm models
-lme_summ = lme_summary(p_samp = lme_p_samp, post = lme_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
-end = Sys.time(); time_lme = round(as.numeric(end - start, units = "hours"), 2)
-if (time_verbose) cat("    Hours Elapsed: ", time_lme, "; Total Hours Elapsed: ", time_initial + time_lme, "\n", sep = "")
+end = Sys.time(); time_lme_fit = round(as.numeric(end - start, units = "hours"), 2)
+ctime = sum(c(time_initial, time_lme_fit))
+if (time_verbose) cat("    Hours Elapsed: ", time_lme_fit, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
 
+# step 4b: summarize and export the estimates from the lme/lm models
+start = Sys.time()
+lme_summ = lme_summary(p_samp = lme_p_samp, post = lme_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
+if (write) write.csv(lme_summ, paste(out_dir, paste("lme_summary_", seed, ".csv", sep = ""), sep = "/"), row.names = F)
+end = Sys.time(); time_lme_summ = round(as.numeric(end - start, units = "hours"), 2)
+ctime = sum(c(time_initial, time_lme_fit, time_lme_summ))
+if (time_verbose) cat("    Hours Elapsed: ", time_lme_summ, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
 
 # step 5a: fit the tsm model
 start = Sys.time()
@@ -104,18 +111,20 @@ tsm_inits = tsm_1_gen_inits(params = params, obs = obs_out, n_chains = tsm_dims[
 tsm_post = fit_tsm_1_model(params = params, true = pop_out, obs = obs_out, inits = tsm_inits,
                            dims = tsm_dims, parallel = P,
                            verbose = verbose, jags_verbose = jags_verbose)
+end = Sys.time(); time_tsm_fit = round(as.numeric(end - start, units = "hours"), 2)
+ctime = sum(c(time_initial, time_lme_fit, time_lme_summ, time_tsm_fit))
+if (time_verbose) cat("    Hours Elapsed: ", time_tsm_fit, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
 
-# step 5b: summarize the tsm model
+# step 5b: summarize and export the estimates from the tsm model
 tsm_summ = tsm_1_summary(p_samp = tsm_p_samp, post = tsm_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
-end = Sys.time(); time_tsm = round(as.numeric(end - start, units = "hours"), 2)
-if (time_verbose) cat("    Hours Elapsed: ", time_tsm, "; Total Hours Elapsed: ", time_initial + time_lme + time_tsm, "\n", sep = "")
+if (write) write.csv(tsm_summ, paste(out_dir, paste("tsm_summary_", seed, ".csv", sep = ""), sep = "/"), row.names = F)
+end = Sys.time(); time_tsm_summ = round(as.numeric(end - start, units = "hours"), 2)
+ctime = sum(c(time_initial, time_lme_fit, time_lme_summ, time_tsm_fit_summ))
+if (time_verbose) cat("    Hours Elapsed: ", time_tsm, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
 
 # step 6: obtain summaries and save output
 params_summ = params_summary(params = params, seed = seed)
+if (write) write.csv(params_summ, paste(out_dir, paste("param_summary_", seed, ".csv", sep = ""), sep = "/"), row.names = F)
 
 if (verbose) cat("---------------------------------------------------\n")
 
-# save output
-if (write) write.csv(params_summ, paste(out_dir, paste("param_summary_", seed, ".csv", sep = ""), sep = "/"), row.names = F)
-if (write) write.csv(lme_summ, paste(out_dir, paste("lme_summary_", seed, ".csv", sep = ""), sep = "/"), row.names = F)
-if (write) write.csv(tsm_summ, paste(out_dir, paste("tsm_summary_", seed, ".csv", sep = ""), sep = "/"), row.names = F)
