@@ -44,14 +44,14 @@ bgr_summ = function(summ, vars) {
   colnames(p_iters_any_worse) = c("1.1", "1.2")
   
   # print the output to the console
-  cat("\n------------------------------------\n")
+  cat("\n--------------------------------------\n")
   cat("% of All Estimates above criteria:\n")
   print(p_worse)
   
   cat("--------------------------------------\n")
   cat("% of Iterations with at Least one", "\n   Parameter Element above criteria:\n")
   print(p_iters_any_worse)
-  cat("--------------------------------------")
+  cat("--------------------------------------\n")
   
 }
 
