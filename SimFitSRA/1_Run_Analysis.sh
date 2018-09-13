@@ -6,7 +6,7 @@ module load R/3.3.3
 
 # specify the seeds you wish to run
 # the length of this array specifies how many instances are initiated
-N=3
+N=10
 seeds=$(seq $N)
 
 echo "############################################"
@@ -33,10 +33,10 @@ do
   
   # sleep for a minute between iterations of run_script
   # only if this isn't the last one
-  if [ $seed -lt ${seeds[-1]} ]
-  then
+  #if [ $seed -lt ${seeds[-1]} ]
+  #then
     sleep 60
-  fi
+  #fi
   
 done
 

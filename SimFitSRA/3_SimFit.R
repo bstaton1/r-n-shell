@@ -36,8 +36,8 @@ lme_p_samp = 0.5 # proportion of MCMC samples used in dw brp calcs for lme model
 tsm_p_samp = 1   # proportion of MCMC samples used in dw brp calcs for tsm model
 
 # mcmc dimensions
-lme_dims = c(ni = 100, nb = 100, nt = 1, nc = 2, na = 100)
-tsm_dims = c(ni = 10, nb = 10, nt = 1, nc = 3, na = 50)
+lme_dims = c(ni = 10000, nb = 2000, nt = 2, nc = 2, na = 1000)
+tsm_dims = c(ni = 100000, nb = 1000, nt = 30, nc = 3, na = 1000)
 
 # output directories
 out_folder = "Output"
