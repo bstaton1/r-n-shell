@@ -24,6 +24,11 @@ seed = as.numeric(args[1])      # seed for this batch
 # seed = 1
 
 # set the random seed
+
+if (is.na(seed)) {
+  seed = as.numeric(Sys.time())
+  warning("object 'seed' not passed via command line. Using as.numeric(Sys.time()")
+} 
 set.seed(seed)     
 
 # options
@@ -32,16 +37,19 @@ P = T            # run JAGS in parallel?
 verbose = T      # print progress messages (which step: fitting vs. processing)?
 jags_verbose = F # print progress messages from JAGS?
 time_verbose = T # print progress messages from the time on each step?
-lme_p_samp = 0.5 # proportion of MCMC samples used in dw brp calcs for lme model
+lme_p_samp = 1   # proportion of MCMC samples used in dw brp calcs for lme model
 tsm_p_samp = 1   # proportion of MCMC samples used in dw brp calcs for tsm model
 
 # mcmc dimensions
-lme_dims = c(ni = 10000, nb = 2000, nt = 2, nc = 2, na = 1000)
-tsm_dims = c(ni = 100000, nb = 1000, nt = 30, nc = 3, na = 1000)
+lme_dims = c(ni = 5000, nb = 1000, nt = 1, nc = 2, na = 1000)
+tsm_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
+# lme_dims = c(ni = 10000, nb = 2000, nt = 2, nc = 2, na = 1000)
+# tsm_dims = c(ni = 100000, nb = 1000, nt = 30, nc = 3, na = 1000)
 
 # output directories
 out_folder = "Output"
 
+# packages
 library(coda)
 library(mvtnorm)
 library(R2OpenBUGS)
@@ -49,8 +57,7 @@ suppressWarnings(suppressMessages(library(jagsUI, warn.conflicts = F)))
 library(scales)
 
 # READ IN FUNCTIONS FOR THIS ANALYSIS
-func_dir = paste(getwd(), "Functions", sep = "/")
-funcs = dir(func_dir)
+func_dir = "Functions"; funcs = dir(func_dir)
 for (i in 1:length(funcs)) source(paste(func_dir, funcs[i], sep = "/"))
 
 # READ IN SAMPLES OF LEADING PARAMETERS
@@ -100,7 +107,7 @@ if (time_verbose) cat("    Hours Elapsed: ", time_lme_fit, "; Total Hours Elapse
 # step 4b: summarize and export the estimates from the lme/lm models
 start = Sys.time()
 lme_summ = lme_summary(p_samp = lme_p_samp, post = lme_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
-if (write) write.csv(lme_summ, paste(out_dir, paste("lme_summary_", seed, ".csv", sep = ""), sep = "/"), row.names = F)
+if (write) write.csv(lme_summ, paste(out_dir, fileName("lme_summary", seed, ".csv"), sep = "/"), row.names = F)
 end = Sys.time(); time_lme_summ = round(as.numeric(end - start, units = "hours"), 2)
 ctime = sum(c(time_initial, time_lme_fit, time_lme_summ))
 if (time_verbose) cat("    Hours Elapsed: ", time_lme_summ, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
@@ -117,14 +124,13 @@ if (time_verbose) cat("    Hours Elapsed: ", time_tsm_fit, "; Total Hours Elapse
 
 # step 5b: summarize and export the estimates from the tsm model
 tsm_summ = tsm_1_summary(p_samp = tsm_p_samp, post = tsm_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
-if (write) write.csv(tsm_summ, paste(out_dir, paste("tsm_summary_", seed, ".csv", sep = ""), sep = "/"), row.names = F)
+if (write) write.csv(tsm_summ, paste(out_dir, fileName("tsm_summary", seed, ".csv"), sep = "/"), row.names = F)
 end = Sys.time(); time_tsm_summ = round(as.numeric(end - start, units = "hours"), 2)
-ctime = sum(c(time_initial, time_lme_fit, time_lme_summ, time_tsm_fit_summ))
-if (time_verbose) cat("    Hours Elapsed: ", time_tsm, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
+ctime = sum(c(time_initial, time_lme_fit, time_lme_summ, time_tsm_fit, time_tsm_summ))
+if (time_verbose) cat("    Hours Elapsed: ", time_tsm_summ, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
 
 # step 6: obtain summaries and save output
 params_summ = params_summary(params = params, seed = seed)
-if (write) write.csv(params_summ, paste(out_dir, paste("param_summary_", seed, ".csv", sep = ""), sep = "/"), row.names = F)
+if (write) write.csv(params_summ, paste(out_dir, fileName("param_summary", seed, ".csv"), sep = "/"), row.names = F)
 
 if (verbose) cat("---------------------------------------------------\n")
-
