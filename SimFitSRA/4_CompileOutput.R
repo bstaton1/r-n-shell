@@ -8,11 +8,11 @@ out_dir = paste(getwd(), out_folder, sep = "/")
 
 # the individual file names for each type
 out_files = dir(out_dir)
-first3 = substr(out_files, 1, 3) == "lme"
+first3 = substr(out_files, 1, 3)
 last3 = substr(out_files, nchar(out_files) - 2, nchar(out_files))
-lme_files = out_files[first3 == "lme" & last3 == ".csv"]
-tsm_files = out_files[first3 == "tsm" & last3 == ".csv"]
-param_files = out_files[first3 == "par" & last3 == ".csv"]
+lme_files = out_files[first3 == "lme" & last3 == "csv"]
+tsm_files = out_files[first3 == "tsm" & last3 == "csv"]
+param_files = out_files[first3 == "par" & last3 == "csv"]
 
 # the seeds that were saved for each type
 lme_seeds = unlist(as.numeric(regmatches(lme_files, gregexpr("[[:digit:]]+", lme_files))))
