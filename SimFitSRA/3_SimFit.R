@@ -41,8 +41,8 @@ time_verbose = T # print progress messages from the time on each step?
 # mcmc dimensions
 # lme_dims = c(ni = 5000, nb = 1000, nt = 1, nc = 2, na = 1000)
 # tsm_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
-lme_dims = c(ni = 10000, nb = 2000, nt = 2, nc = 2, na = 1000)
-tsm_dims = c(ni = 150000, nb = 10000, nt = 50, nc = 3, na = 1000)
+lme_dims = c(ni = 50000, nb = 10000, nt = 35, nc = 7, na = 1000)
+tsm_dims = c(ni = 200000, nb = 20000, nt = 140, nc = 7, na = 1000)
 
 # output directories
 out_folder = "Output"

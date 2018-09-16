@@ -1,32 +1,38 @@
 
 # post-processing/plotting script
 
+.pardefault = par()
+
 # load files
 load("Output/lme_summ")
 load("Output/param_summ")
 load("Output/tsm_summ")
 
 # load in the specialized plotting function
-.libPaths("C:/~/R/win-library/3.5")
+#.libPaths("C:/~/R/win-library/3.5")
 library(scales)
 
 source("Functions/z5_biplot_function.R")
 
 # extract true reference points for each iteration
 true = sapply(c("U_MSY", "S_MSY", "U_obj", "S_obj"),
-              function(x) subset(param_summ, param == x)$value)
+              function(x) subset(param_summ, param == x | is.na(param))$value)
+true = cbind(seed = unique(param_summ$seed), true)
 
 # extract simple regression estimates of reference points
 lm_ests = sapply(c("U_MSY", "S_MSY", "U_obj", "S_obj"),
                  function(x) subset(lme_summ, (param == x & method == "lm") | (is.na(param) & method == "lm"))[,"X50."])
+lm_ests = cbind(seed = unique(lme_summ$seed), lm_ests)
 
 # extract mixed effect regression estimates of reference points
 lme_ests = sapply(c("U_MSY", "S_MSY", "U_obj", "S_obj"),
                   function(x) subset(lme_summ, (param == x & method == "lme") | (is.na(param) & method == "lm"))[,"X50."])
+lme_ests = cbind(seed = unique(lme_summ$seed), lme_ests)
 
 # extract mixed effect regression estimates of reference points
 tsm_ests = sapply(c("U_MSY", "S_MSY", "U_obj", "S_obj"),
                   function(x) subset(tsm_summ, (param == x) | (is.na(param)))[,"X50."])
+tsm_ests = cbind(seed = unique(tsm_summ$seed), tsm_ests)
 
 # calculate bias
 lm_bias = (lm_ests - true)/true
@@ -50,5 +56,19 @@ biplot(x = tsm_bias[,"S_MSY"], y = lm_bias[,"S_MSY"], xlab = "TSM (S_MSY)", ylab
 biplot(x = tsm_bias[,"U_obj"], y = lm_bias[,"U_obj"], xlab = "TSM (U_obj)", ylab = "LM (U_obj)", new_window = F)
 biplot(x = tsm_bias[,"S_obj"], y = lm_bias[,"S_obj"], xlab = "TSM (S_obj)", ylab = "LM (S_obj)", new_window = F)
 
+par(.pardefault)
+par(mar = c(2,2,2,2))
+
+for (i in 1:4) {
+  p = c("U_MSY", "S_MSY", "U_obj", "S_obj")
+  boxplot(cbind(LM = lm_bias[,p[i]], LME = lme_bias[,p[i]], TSM = tsm_bias[,p[i]]),
+          col = "skyblue", 
+          main = p[i])
+  abline(h = 0, lty = 2, lwd = 3, col = "red")
+}
+
 junk = dev.off(); rm(junk)
+
+# windows()
+
 
