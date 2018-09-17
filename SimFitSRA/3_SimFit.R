@@ -93,7 +93,11 @@ end = Sys.time(); time_initial = round(as.numeric(end - start, units = "hours"),
 ctime = time_initial
 if (time_verbose) cat("    Hours Elapsed: ", time_initial, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
 
-# step 4a: fit the lme/lm models
+# step 4: obtain summaries and save output
+params_summ = params_summary(params = params, seed = seed)
+if (write) write.csv(params_summ, paste(out_dir, fileName("param_summary", seed, ".csv"), sep = "/"), row.names = F)
+
+# step 5a: fit the lme/lm models
 start = Sys.time()
 lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out,
                          dims = lme_dims, parallel = P,
@@ -102,7 +106,7 @@ end = Sys.time(); time_lme_fit = round(as.numeric(end - start, units = "hours"),
 ctime = sum(c(time_initial, time_lme_fit))
 if (time_verbose) cat("    Hours Elapsed: ", time_lme_fit, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
 
-# step 4b: summarize and export the estimates from the lme/lm models
+# step 5b: summarize and export the estimates from the lme/lm models
 start = Sys.time()
 lme_summ = lme_summary(post = lme_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
 if (write) write.csv(lme_summ, paste(out_dir, fileName("lme_summary", seed, ".csv"), sep = "/"), row.names = F)
@@ -110,7 +114,7 @@ end = Sys.time(); time_lme_summ = round(as.numeric(end - start, units = "hours")
 ctime = sum(c(time_initial, time_lme_fit, time_lme_summ))
 if (time_verbose) cat("    Hours Elapsed: ", time_lme_summ, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
 
-# step 5a: fit the tsm model
+# step 6a: fit the tsm model
 start = Sys.time()
 tsm_inits = tsm_1_gen_inits(params = params, obs = obs_out, n_chains = tsm_dims["nc"])
 tsm_post = fit_tsm_1_model(params = params, true = pop_out, obs = obs_out, inits = tsm_inits,
@@ -120,15 +124,11 @@ end = Sys.time(); time_tsm_fit = round(as.numeric(end - start, units = "hours"),
 ctime = sum(c(time_initial, time_lme_fit, time_lme_summ, time_tsm_fit))
 if (time_verbose) cat("    Hours Elapsed: ", time_tsm_fit, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
 
-# step 5b: summarize and export the estimates from the tsm model
+# step 6b: summarize and export the estimates from the tsm model
 tsm_summ = tsm_1_summary(post = tsm_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
 if (write) write.csv(tsm_summ, paste(out_dir, fileName("tsm_summary", seed, ".csv"), sep = "/"), row.names = F)
 end = Sys.time(); time_tsm_summ = round(as.numeric(end - start, units = "hours"), 2)
 ctime = sum(c(time_initial, time_lme_fit, time_lme_summ, time_tsm_fit, time_tsm_summ))
 if (time_verbose) cat("    Hours Elapsed: ", time_tsm_summ, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
-
-# step 6: obtain summaries and save output
-params_summ = params_summary(params = params, seed = seed)
-if (write) write.csv(params_summ, paste(out_dir, fileName("param_summary", seed, ".csv"), sep = "/"), row.names = F)
 
 if (verbose) cat("---------------------------------------------------\n")
