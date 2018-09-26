@@ -13,7 +13,7 @@
 #' @examples get.post(post, var="lnalpha")
 #' @examples get.post(post, "alpha", do.plot = T, do.post = T)$posterior
 
-get.post = function(post.samp, var, do.post=F, do.plot=F, n.chains = NULL){
+get.post = function(post.samp, var, do.post=F, do.plot=F, n.chains = NULL, new.window = T){
   require(coda)
   
   #coerce to matrix if mcmc.list
@@ -35,7 +35,7 @@ get.post = function(post.samp, var, do.post=F, do.plot=F, n.chains = NULL){
       # number of iterations
       n.iterations = nrow(post)/nchains
       
-      windows(record = T)
+      if (new.window) windows(record = T)
       par(mfrow = c(4,2), mar = c(2, 2, 1.5, 1.5), oma = c(1,1,1,1))
       
       # split the posterior into chains
@@ -104,7 +104,7 @@ get.post = function(post.samp, var, do.post=F, do.plot=F, n.chains = NULL){
       
       # NOTE: Same as above, if you want more than 8 chains, just add colors to this character vector
       colors = c("", "red", "green", "skyblue", "yellow", "forestgreen", "pink", "purple")
-      windows(width=12, height=8)
+      if (new.window) windows(width=12, height=8)
       par(mfrow=c(1,2))
       
       plot(density(chain[[1]]), col="Blue", xlab="", xlim=c(min(post), max(post)),ylim = c(0, max(max.dens)), main=paste("Density of ", var, sep=""))

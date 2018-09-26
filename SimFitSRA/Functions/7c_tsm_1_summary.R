@@ -4,7 +4,7 @@
 # max_p_overfished = params$max_p_overfished
 # parallel = T
 
-tsm_1_summary = function(post, max_p_overfished, seed, verbose = T) {
+tsm_1_summary = function(post, max_p_overfished, seed, verbose = T, diag_plots = T) {
   
   # print message
   if(verbose) cat("  Summarizing TSM Model #1 Output", "\n", sep = "")
@@ -56,6 +56,17 @@ tsm_1_summary = function(post, max_p_overfished, seed, verbose = T) {
     
     bgr = gelman.diag(new_post, multivariate = F)[[1]][,"Point est."]
     ess = effectiveSize(new_post)
+    
+    if (diag_plots) {
+      pdf(fileName("Output/tsm_diag_plots", seed,".pdf"), h = 8, w = 6)
+      x = get.post(new_post, "U_msy[", do.plot = T, new.window = F)
+      x = get.post(new_post, "S_msy[", do.plot = T, new.window = F)
+      x = get.post(new_post, "U_MSY", do.plot = T, new.window = F)
+      x = get.post(new_post, "S_MSY", do.plot = T, new.window = F)
+      x = get.post(new_post, "alpha[", do.plot = T, new.window = F)
+      x = get.post(new_post, "beta[", do.plot = T, new.window = F)
+      dev.off()
+    }
     
     # combine output
     ests = rbind(alpha_summ, beta_summ, U_msy_summ, S_msy_summ); rownames(ests) = NULL

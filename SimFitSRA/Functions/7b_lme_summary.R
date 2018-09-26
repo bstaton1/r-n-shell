@@ -1,5 +1,9 @@
 
-lme_summary = function(post, max_p_overfished, seed, verbose = T) {
+max_p_overfished = params$max_p_overfished
+seed = 1
+verbose = T
+
+lme_summary = function(post, max_p_overfished, seed, verbose = T, diag_plots = T) {
   
   # print message
   if(verbose) cat("  Summarizing LME Model Output", "\n", sep = "")
@@ -89,6 +93,26 @@ lme_summary = function(post, max_p_overfished, seed, verbose = T) {
                   mgmt_post_lm),
       chains = chains
     )
+    
+    if (diag_plots) {
+      pdf(fileName("Output/lme_diag_plots", seed,".pdf"), h = 8, w = 6)
+      x = get.post(lme_post, "U_msy_lme[", do.plot = T, new.window = F)
+      x = get.post(lme_post, "S_msy_lme[", do.plot = T, new.window = F)
+      x = get.post(lme_post, "U_MSY", do.plot = T, new.window = F)
+      x = get.post(lme_post, "S_MSY", do.plot = T, new.window = F)
+      x = get.post(lme_post, "alpha_lme[", do.plot = T, new.window = F)
+      x = get.post(lme_post, "beta_lme[", do.plot = T, new.window = F)
+      dev.off()
+      
+      pdf(fileName("Output/lm_diag_plots", seed,".pdf"), h = 8, w = 6)
+      x = get.post(lm_post, "U_msy_lm[", do.plot = T, new.window = F)
+      x = get.post(lm_post, "S_msy_lm[", do.plot = T, new.window = F)
+      x = get.post(lm_post, "U_MSY", do.plot = T, new.window = F)
+      x = get.post(lm_post, "S_MSY", do.plot = T, new.window = F)
+      x = get.post(lm_post, "alpha_lm[", do.plot = T, new.window = F)
+      x = get.post(lm_post, "beta_lm[", do.plot = T, new.window = F)
+      dev.off()
+    }
     
     lme_bgr = gelman.diag(lme_post, multivariate = F)[[1]][,"Point est."]
     lm_bgr = gelman.diag(lm_post, multivariate = F)[[1]][,"Point est."]
