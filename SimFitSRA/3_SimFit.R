@@ -125,6 +125,7 @@ ctime = sum(c(time_initial, time_lme_fit, time_lme_summ, time_tsm_fit))
 if (time_verbose) cat("    Hours Elapsed: ", time_tsm_fit, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
 
 # step 6b: summarize and export the estimates from the tsm model
+start = Sys.time()
 tsm_summ = tsm_1_summary(post = tsm_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
 if (write) write.csv(tsm_summ, paste(out_dir, fileName("tsm_summary", seed, ".csv"), sep = "/"), row.names = F)
 end = Sys.time(); time_tsm_summ = round(as.numeric(end - start, units = "hours"), 2)

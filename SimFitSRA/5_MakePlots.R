@@ -10,7 +10,7 @@ load("Output/tsm_summ")
 
 # load in the specialized plotting function
 #.libPaths("C:/~/R/win-library/3.5")
-library(scales)
+suppressWarnings(library(scales))
 
 source("Functions/z5_biplot_function.R")
 
@@ -59,8 +59,8 @@ biplot(x = tsm_bias[,"S_obj"], y = lm_bias[,"S_obj"], xlab = "TSM (S_obj)", ylab
 par(.pardefault)
 par(mar = c(2,2,2,2))
 
+p = c("U_MSY", "S_MSY", "U_obj", "S_obj")
 for (i in 1:4) {
-  p = c("U_MSY", "S_MSY", "U_obj", "S_obj")
   boxplot(cbind(LM = lm_bias[,p[i]], LME = lme_bias[,p[i]], TSM = tsm_bias[,p[i]]),
           col = "skyblue", 
           main = p[i])
@@ -68,7 +68,3 @@ for (i in 1:4) {
 }
 
 junk = dev.off(); rm(junk)
-
-# windows()
-
-
