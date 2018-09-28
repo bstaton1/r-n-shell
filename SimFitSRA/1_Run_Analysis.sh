@@ -6,11 +6,12 @@ module load R/3.3.3
 
 # specify the seeds you wish to run
 # the length of this array specifies how many instances are initiated
-N=10
-seeds=$(seq $N)
+f=21
+l=50
+seeds=$(seq $f $l)
 
 echo "############################################"
-echo "########## Starting $N jobs ################"
+echo "########## Starting jobs ###################"
 echo "############################################"
 
 echo " "
