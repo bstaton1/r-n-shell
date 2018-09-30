@@ -1,5 +1,5 @@
 
-lme_jags_mod = function() {
+mod = function() {
   
   ### FIT THE MIXED EFFECTS VERSION ###
   sig_fit_lme ~ dunif(0, 5)
@@ -39,6 +39,5 @@ lme_jags_mod = function() {
   }
 }
 
-lme_model_file = "Model Files/lme_model.txt"
-write.model(lme_jags_mod, lme_model_file)
-
+model_file = "Model Files/lme_model.txt"
+write.model(mod, model_file); rm(mod); rm(model_file)

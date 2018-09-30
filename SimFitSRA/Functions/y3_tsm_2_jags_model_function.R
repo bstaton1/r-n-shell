@@ -19,18 +19,23 @@ mod = function() {
     log_resid_0[s] <- log_resid_0a
   }
   
-  # build the Sigma_R[,] matrix
-  sig.common ~ dunif(0,2)
-  var.common <- sig.common^2
-  rho.common ~ dunif(-0.05,1)
-  rho.vec[1] <- 1
-  rho.vec[2] <- rho.common
+  # estimate the covariance matrix on log(recruitment states
+  Tau_R[1:ns,1:ns] ~ dwish(R_wish[1:ns,1:ns], df_wish)
+  Sigma_R[1:ns,1:ns] <- inverse(Tau_R)
   
-  for (i in 1:vcov.N) {
-    rho_mat[vcov.row[i],vcov.col[i]] <- rho.vec[vcov.ind[i]]
-    Sigma_R[vcov.row[i],vcov.col[i]] <- var.common * rho.vec[vcov.ind[i]]
+  # white noise process sd for each substock
+  for (s in 1:ns) {
+    sigma_R[s] <- sqrt(Sigma_R[s,s])
   }
   
+  # get the pairwise correlation matrix
+  for (i in 1:ns) {
+    for (j in 1:ns) {
+      rho_mat[i,j] <- Sigma_R[i,j]/(sigma_R[i] * sigma_R[j])
+    }
+  }
+  
+  # precision matrix used by dmnorm()
   Tau_R[1:ns,1:ns] <- inverse(Sigma_R[1:ns,1:ns])
   
   # white noise process sd for each substock
@@ -143,5 +148,5 @@ mod = function() {
   }
 }
 
-model_file = "Model Files/tsm_model_1.txt"
+model_file = "Model Files/tsm_model_2.txt"
 write_model(mod, model_file); rm(mod); rm(model_file)
