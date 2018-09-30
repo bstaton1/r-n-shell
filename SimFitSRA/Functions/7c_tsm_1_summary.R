@@ -74,7 +74,7 @@ tsm_1_summary = function(post, max_p_overfished, seed, verbose = T, diag_plots =
     id = data.frame(seed = seed, 
                     param = c(rep(c("alpha", "beta", "U_msy", "S_msy"), each = ns), "S_obj", "U_obj", "S_MSY", "U_MSY"),
                     stock = c(rep(1:ns, 4), rep(NA, 4)),
-                    method = "tsm")
+                    method = "tsm1")
     ests = cbind(id, ests)
     ests = cbind(ests, bgr = bgr, ess = ess)
     
@@ -83,7 +83,7 @@ tsm_1_summary = function(post, max_p_overfished, seed, verbose = T, diag_plots =
   } else {
     
     output = data.frame(seed = seed, param = NA, stock = NA,
-                        method = c("tsm"), mean = NA, sd = NA, 
+                        method = c("tsm1"), mean = NA, sd = NA, 
                         x1 = NA, x2 = NA, x3 = NA)
     
     colnames(output)[(ncol(output) - 2):ncol(output)] = c("50%", "2.5%", "97.5%")
