@@ -144,4 +144,4 @@ mod = function() {
 }
 
 model_file = "Model Files/tsm_model_1.txt"
-write_model(mod, model_file); rm(mod); rm(model_file)
+write.model(mod, model_file); rm(mod); rm(model_file)

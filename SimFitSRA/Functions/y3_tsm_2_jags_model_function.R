@@ -35,14 +35,6 @@ mod = function() {
     }
   }
   
-  # precision matrix used by dmnorm()
-  Tau_R[1:ns,1:ns] <- inverse(Sigma_R[1:ns,1:ns])
-  
-  # white noise process sd for each substock
-  for (s in 1:ns) {
-    sigma_R[s] <- sqrt(Sigma_R[s,s])
-  }
-  
   # produce Ricker predictions
   for (s in 1:ns) {
     # for years without SR link: use unfished equilibrium recruitment
@@ -149,4 +141,4 @@ mod = function() {
 }
 
 model_file = "Model Files/tsm_model_2.txt"
-write_model(mod, model_file); rm(mod); rm(model_file)
+write.model(mod, model_file); rm(mod); rm(model_file)
