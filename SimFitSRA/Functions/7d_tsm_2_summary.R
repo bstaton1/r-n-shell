@@ -20,10 +20,10 @@ tsm_2_summary = function(post, max_p_overfished, seed, verbose = T, diag_plots =
     sigma_R_summ = t(get.post(post, "sigma_R["))
     rho_mat_summ = get.post(post, "rho_mat[")
     
-    diag_names = paste("rho_mat[", 1:ns, ",", 1:ns, "]", sep = "")
     
     alpha_post = get.post(post, "alpha[", do.post = T)$posterior
     ns = ncol(alpha_post); ntot = nrow(alpha_post)
+    diag_names = paste("rho_mat[", 1:ns, ",", 1:ns, "]", sep = "")
     beta_post = get.post(post, "beta[", do.post = T)$posterior
     U_msy_post = get.post(post, "U_msy[", do.post = T)$posterior
     S_msy_post = get.post(post, "S_msy[", do.post = T)$posterior
