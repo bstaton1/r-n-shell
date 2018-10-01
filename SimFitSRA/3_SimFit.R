@@ -38,11 +38,18 @@ verbose = T      # print progress messages (which step: fitting vs. processing)?
 jags_verbose = F # print progress messages from JAGS?
 time_verbose = T # print progress messages from the time on each step?
 
+# models to fit
+do_lme = T
+do_tsm1 = T
+do_tsm2 = T
+
 # mcmc dimensions
-# lme_dims = c(ni = 5000, nb = 1000, nt = 1, nc = 2, na = 1000)
-# tsm_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
-lme_dims = c(ni = 50000, nb = 10000, nt = 35, nc = 7, na = 1000)
-tsm_dims = c(ni = 300000, nb = 20000, nt = 140, nc = 7, na = 1000)
+lme_dims = c(ni = 5000, nb = 1000, nt = 1, nc = 2, na = 1000)
+tsm_1_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
+tsm_2_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
+# lme_dims = c(ni = 50000, nb = 10000, nt = 35, nc = 7, na = 1000)
+# tsm_1_dims = c(ni = 300000, nb = 20000, nt = 140, nc = 7, na = 1000)
+# tsm_2_dims = c(ni = 300000, nb = 20000, nt = 140, nc = 7, na = 1000)
 
 # output directories
 out_folder = "Output"
@@ -89,47 +96,58 @@ obs_out = obs_filter(params = params, obs = obs_out)
 
 # step 3c: obtain observed brood year states
 obs_out = gen_Rys_obs(params, obs_out)
-end = Sys.time(); time_initial = round(as.numeric(end - start, units = "hours"), 2)
-ctime = time_initial
-if (time_verbose) cat("    Hours Elapsed: ", time_initial, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
 
 # step 4: obtain summaries and save output
 params_summ = params_summary(params = params, seed = seed)
 if (write) write.csv(params_summ, paste(out_dir, fileName("param_summary", seed, ".csv"), sep = "/"), row.names = F)
+ctime = end_timer(start, ctime = 0)
 
-# step 5a: fit the lme/lm models
-start = Sys.time()
-lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out,
-                         dims = lme_dims, parallel = P,
-                         verbose = verbose, jags_verbose = jags_verbose)
-end = Sys.time(); time_lme_fit = round(as.numeric(end - start, units = "hours"), 2)
-ctime = sum(c(time_initial, time_lme_fit))
-if (time_verbose) cat("    Hours Elapsed: ", time_lme_fit, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
-
-# step 5b: summarize and export the estimates from the lme/lm models
-start = Sys.time()
-lme_summ = lme_summary(post = lme_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
-if (write) write.csv(lme_summ, paste(out_dir, fileName("lme_summary", seed, ".csv"), sep = "/"), row.names = F)
-end = Sys.time(); time_lme_summ = round(as.numeric(end - start, units = "hours"), 2)
-ctime = sum(c(time_initial, time_lme_fit, time_lme_summ))
-if (time_verbose) cat("    Hours Elapsed: ", time_lme_summ, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
-
-# step 6a: fit the tsm model
-start = Sys.time()
-tsm_inits = tsm_1_gen_inits(params = params, obs = obs_out, n_chains = tsm_dims["nc"])
-tsm_post = fit_tsm_1_model(params = params, true = pop_out, obs = obs_out, inits = tsm_inits,
-                           dims = tsm_dims, parallel = P,
+# if fitting the lme model
+if (do_lme) {
+  # step 5a: fit the lme/lm models
+  start = Sys.time()
+  lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out,
+                           dims = lme_dims, parallel = P,
                            verbose = verbose, jags_verbose = jags_verbose)
-end = Sys.time(); time_tsm_fit = round(as.numeric(end - start, units = "hours"), 2)
-ctime = sum(c(time_initial, time_lme_fit, time_lme_summ, time_tsm_fit))
-if (time_verbose) cat("    Hours Elapsed: ", time_tsm_fit, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
+  
+  # step 5b: summarize and export the estimates from the lme/lm models
+  start = Sys.time()
+  lme_summ = lme_summary(post = lme_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
+  if (write) write.csv(lme_summ, paste(out_dir, fileName("lme_summary", seed, ".csv"), sep = "/"), row.names = F)
+  ctime = end_timer(start, ctime = ctime)
+}
 
-# step 6b: summarize and export the estimates from the tsm model
-start = Sys.time()
-tsm_summ = tsm_1_summary(post = tsm_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
-if (write) write.csv(tsm_summ, paste(out_dir, fileName("tsm_summary", seed, ".csv"), sep = "/"), row.names = F)
-end = Sys.time(); time_tsm_summ = round(as.numeric(end - start, units = "hours"), 2)
-ctime = sum(c(time_initial, time_lme_fit, time_lme_summ, time_tsm_fit, time_tsm_summ))
-if (time_verbose) cat("    Hours Elapsed: ", time_tsm_summ, "; Total Hours Elapsed: ", ctime, "\n", sep = "")
+# if fitting the tsm#1 model
+if (do_tsm1) {
+  # step 6a: fit the tsm1
+  start = Sys.time()
+  tsm_inits = tsm_1_gen_inits(params = params, obs = obs_out, n_chains = tsm_dims["nc"])
+  tsm_1_post = fit_tsm_1_model(params = params, true = pop_out, obs = obs_out, inits = tsm_inits,
+                               dims = tsm_dims, parallel = P,
+                               verbose = verbose, jags_verbose = jags_verbose)
+  ctime = end_timer(start, ctime = ctime)
+  
+  # step 6b: summarize and export the estimates from the tsm model
+  start = Sys.time()
+  tsm_1_summ = tsm_1_summary(post = tsm_1_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
+  if (write) write.csv(tsm_1_summ, paste(out_dir, fileName("tsm_1_summary", seed, ".csv"), sep = "/"), row.names = F)
+  ctime = end_timer(start, ctime = ctime)
+}
+
+# if fitting tsm2
+if (do_tsm2) {
+  # step 7a: fit the tsm #2 model
+  start = Sys.time()
+  tsm_2_post = fit_tsm_2_model(params = params, true = pop_out, obs = obs_out, inits = tsm_inits,
+                               dims = tsm_dims, parallel = P,
+                               verbose = verbose, jags_verbose = jags_verbose)
+  ctime = end_timer(start, ctime = ctime)
+  
+  # step7b: summarize and export the estimates from the tsm model
+  start = Sys.time()
+  tsm_2_summ = tsm_2_summary(post = tsm_2_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
+  if (write) write.csv(tsm_2_summ, paste(out_dir, fileName("tsm_2_summary", seed, ".csv"), sep = "/"), row.names = F)
+  ctime = end_timer(start, ctime = ctime)
+}
 
 if (verbose) cat("---------------------------------------------------\n")
