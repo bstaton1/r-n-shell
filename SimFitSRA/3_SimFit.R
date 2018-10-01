@@ -40,16 +40,16 @@ time_verbose = T # print progress messages from the time on each step?
 
 # models to fit
 do_lme = T
-do_tsm1 = T
+do_tsm1 = F
 do_tsm2 = T
 
 # mcmc dimensions
-# lme_dims = c(ni = 5000, nb = 1000, nt = 1, nc = 2, na = 1000)
-# tsm_1_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
-# tsm_2_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
-lme_dims = c(ni = 50000, nb = 50000, nt = 35, nc = 8, na = 1000)
-tsm_1_dims = c(ni = 300000, nb = 20000, nt = 140, nc = 8, na = 1000)
-tsm_2_dims = c(ni = 300000, nb = 20000, nt = 140, nc = 8, na = 1000)
+lme_dims = c(ni = 5000, nb = 1000, nt = 1, nc = 2, na = 1000)
+tsm_1_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
+tsm_2_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
+# lme_dims = c(ni = 50000, nb = 50000, nt = 35, nc = 8, na = 1000)
+# tsm_1_dims = c(ni = 300000, nb = 20000, nt = 140, nc = 8, na = 1000)
+# tsm_2_dims = c(ni = 300000, nb = 20000, nt = 140, nc = 8, na = 1000)
 
 # output directories
 out_folder = "Output"
@@ -117,14 +117,19 @@ if (do_lme) {
   ctime = end_timer(start, ctime = ctime)
 }
 
+
 # if fitting the tsm#1 model
 if (do_tsm1) {
   # step 6a: fit the tsm1
   start = Sys.time()
   tsm_inits = tsm_1_gen_inits(params = params, obs = obs_out, n_chains = tsm_dims["nc"])
-  tsm_1_post = fit_tsm_1_model(params = params, true = pop_out, obs = obs_out, inits = tsm_1_inits,
-                               dims = tsm_dims, parallel = P,
-                               verbose = verbose, jags_verbose = jags_verbose)
+  tsm_1_post = fit_tsm_1_model(
+    params = params, true = pop_out, obs = obs_out,
+    inits = tsm_1_gen_inits(
+      params = params, obs = obs_out,
+      n_chains = tsm_1_dims["nc"]),
+    dims = tsm_1_dims, parallel = P,
+    verbose = verbose, jags_verbose = jags_verbose)
   ctime = end_timer(start, ctime = ctime)
   
   # step 6b: summarize and export the estimates from the tsm model
@@ -138,9 +143,13 @@ if (do_tsm1) {
 if (do_tsm2) {
   # step 7a: fit the tsm #2 model
   start = Sys.time()
-  tsm_2_post = fit_tsm_2_model(params = params, true = pop_out, obs = obs_out, inits = tsm_inits,
-                               dims = tsm_2_dims, parallel = P,
-                               verbose = verbose, jags_verbose = jags_verbose)
+  tsm_2_post = fit_tsm_2_model(
+    params = params, true = pop_out, obs = obs_out,
+    inits = tsm_1_gen_inits(
+      params = params, obs = obs_out,
+      n_chains = tsm_2_dims["nc"]),
+    dims = tsm_2_dims, parallel = P,
+    verbose = verbose, jags_verbose = jags_verbose)
   ctime = end_timer(start, ctime = ctime)
   
   # step7b: summarize and export the estimates from the tsm model
