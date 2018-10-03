@@ -129,3 +129,4 @@ rm mem.txt
 
 cat job-summary.txt
 rm job-summary.txt
+rm jobinfo*
