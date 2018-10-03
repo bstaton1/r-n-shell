@@ -1,6 +1,6 @@
 # x = tsm_UMSY; y = true_UMSY
 
-biplot = function(x, y, xlab = "X-AXIS", ylab = "Y-AXIS", new_window = T) {
+biplot = function(x, y, xlab = "X-AXIS", ylab = "Y-AXIS", new_window = T, main = "MAIN") {
   
   if (new_window) windows(h = 5, w = 5.3)
   
@@ -24,6 +24,8 @@ biplot = function(x, y, xlab = "X-AXIS", ylab = "Y-AXIS", new_window = T) {
   # scatterplot
   plot(y ~ x, xlim = lim, las = 1, ylim = lim,
        ylab = "", xlab = "", type = "n")
+  usr = par("usr"); xdiff = diff(usr[1:2]); ydiff = diff(usr[3:4])
+  text(x = usr[1], y = usr[4] - ydiff * 0.05, cex = 1.2, main, pos = 4, font = 2)
   abline(h = 0, col = "grey", lwd = 2); abline(v = 0, col = "grey", lwd = 2); abline(c(0,1), col = "grey", lty = 2)
   box()
   points(y ~ x, col = alpha("grey30", 0.5), pch = 16, cex = 1.5)
@@ -34,4 +36,5 @@ biplot = function(x, y, xlab = "X-AXIS", ylab = "Y-AXIS", new_window = T) {
   # axis text
   mtext(side = 1, outer = T, xlab, line = 2.5)
   mtext(side = 2, outer = T, ylab, line = 2.5)
+  
 }
