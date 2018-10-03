@@ -43,6 +43,10 @@ do_lme = T
 do_tsm1 = F
 do_tsm2 = T
 
+# random sleeping ranges: in seconds
+minS = 15
+maxS = 200
+
 # mcmc dimensions
 lme_dims = c(ni = 5000, nb = 1000, nt = 1, nc = 2, na = 1000)
 tsm_1_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
@@ -105,6 +109,7 @@ ctime = end_timer(start, ctime = 0)
 # if fitting the lme model
 if (do_lme) {
   # step 5a: fit the lme/lm models
+  random_sleep(seed, minS = minS, maxS = maxS)
   start = Sys.time()
   lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out,
                            dims = lme_dims, parallel = P,
@@ -122,6 +127,7 @@ if (do_lme) {
 if (do_tsm1) {
   # step 6a: fit the tsm1
   start = Sys.time()
+  random_sleep(seed, minS = minS, maxS = maxS)
   tsm_inits = tsm_1_gen_inits(params = params, obs = obs_out, n_chains = tsm_dims["nc"])
   tsm_1_post = fit_tsm_1_model(
     params = params, true = pop_out, obs = obs_out,
@@ -142,6 +148,7 @@ if (do_tsm1) {
 # if fitting tsm2
 if (do_tsm2) {
   # step 7a: fit the tsm #2 model
+  random_sleep(seed, minS = minS, maxS = maxS)
   start = Sys.time()
   tsm_2_post = fit_tsm_2_model(
     params = params, true = pop_out, obs = obs_out,
