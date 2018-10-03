@@ -1,6 +1,4 @@
 # attach(params)
-
-attach(params)
 params_summary = function(params, seed) {
   
   output = with(params, {
@@ -24,5 +22,3 @@ params_summary = function(params, seed) {
   # return output
   return(output)
 }
-
-names(params)
