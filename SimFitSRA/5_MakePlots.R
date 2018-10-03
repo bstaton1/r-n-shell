@@ -1,8 +1,6 @@
 
 # post-processing/plotting script
 
-.pardefault = par()
-
 # load files
 load("Output/lme_summ")
 load("Output/param_summ")
@@ -46,6 +44,11 @@ lme_bias = (lme_ests - true)/true
 tsm_1_bias = (tsm_1_ests - true)/true
 tsm_2_bias = (tsm_2_ests - true)/true
 
+n_lm = nrow(na.omit(lm_bias))
+n_lme = nrow(na.omit(lm_bias))
+n_tsm1 = nrow(na.omit(tsm_1_bias))
+n_tsm2 = nrow(na.omit(tsm_2_bias))
+
 # Make plots
 pdf("Output/Plots.pdf", h = 5, w = 5)
 
@@ -59,11 +62,11 @@ for (i in 1:length(p)) {
   col = "skyblue", 
   main = p[i])
   abline(h = 0, lty = 2, lwd = 3, col = "red")
+  usr = par("usr"); ydiff = diff(usr[3:4])
+  text(x = 1:4, y = usr[3] - ydiff * 0.2, 
+       paste("n =", c(n_lm, n_lme, n_tsm1, n_tsm2)),
+       xpd = T)
 }
-
-mod1 = lm_bias; mod_1_name = "LM"
-mod2 = tsm_2_bias; mod_2_name = "TSM-SIG"
-
 
 multi_biplot = function(x_vars, y_vars, x_name, y_name) {
   sapply(p, function(z) {
