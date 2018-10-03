@@ -17,11 +17,16 @@ tsm_1_summary = function(post, max_p_overfished, seed, verbose = T, diag_plots =
     beta_summ = t(get.post(post, "beta["))
     U_msy_summ = t(get.post(post, "U_msy["))
     S_msy_summ = t(get.post(post, "S_msy["))
+    mean_sigma_R_summ = t(get.post(post, "sigma_R[1]"))
+    mean_rho_summ = t(get.post(post, "rho_mat[2,1]"))
     
     alpha_post = get.post(post, "alpha[", do.post = T)$posterior
     beta_post = get.post(post, "beta[", do.post = T)$posterior
     U_msy_post = get.post(post, "U_msy[", do.post = T)$posterior
     S_msy_post = get.post(post, "S_msy[", do.post = T)$posterior
+    mean_sigma_R_post = get.post(post, "sigma_R[1]", do.post = T)$posterior
+    mean_rho_post = get.post(post, "rho_mat[2,1]", do.post = T)$posterior
+    
     
     # calculate stock-specific reference points
     # max_keep = 10000  # the maximum number of posterior samples to keep for dw brp calculations
@@ -50,6 +55,8 @@ tsm_1_summary = function(post, max_p_overfished, seed, verbose = T, diag_plots =
     new_post = mat2mcmc.list(
       mat = cbind(alpha_post, beta_post,
                   U_msy_post, S_msy_post,
+                  mean_sigma_R = mean_sigma_R_post,
+                  mean_rho = mean_rho_post,
                   mgmt_post),
       chains = as.matrix(post, chains = T)[,"CHAIN"]
     )
@@ -69,11 +76,11 @@ tsm_1_summary = function(post, max_p_overfished, seed, verbose = T, diag_plots =
     }
     
     # combine output
-    ests = rbind(alpha_summ, beta_summ, U_msy_summ, S_msy_summ); rownames(ests) = NULL
+    ests = rbind(alpha_summ, beta_summ, U_msy_summ, S_msy_summ, mean_sigma_R_summ, mean_rho_summ); rownames(ests) = NULL
     ests = rbind(ests, mgmt_summ); rownames(ests) = NULL
     id = data.frame(seed = seed, 
-                    param = c(rep(c("alpha", "beta", "U_msy", "S_msy"), each = ns), "S_obj", "U_obj", "S_MSY", "U_MSY"),
-                    stock = c(rep(1:ns, 4), rep(NA, 4)),
+                    param = c(rep(c("alpha", "beta", "U_msy", "S_msy"), each = ns), "mean_sigma_R", "mean_rho", "S_obj", "U_obj", "S_MSY", "U_MSY"),
+                    stock = c(rep(1:ns, 4), rep(NA, 6)),
                     method = "tsm1")
     ests = cbind(id, ests)
     ests = cbind(ests, bgr = bgr, ess = ess)
