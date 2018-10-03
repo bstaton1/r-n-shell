@@ -40,7 +40,7 @@ time_verbose = T # print progress messages from the time on each step?
 
 # models to fit
 do_lme = T
-do_tsm1 = F
+do_tsm1 = T
 do_tsm2 = T
 
 # random sleeping ranges: in seconds
@@ -48,12 +48,12 @@ minS = 15
 maxS = 200
 
 # mcmc dimensions
-lme_dims = c(ni = 5000, nb = 1000, nt = 1, nc = 2, na = 1000)
-tsm_1_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
-tsm_2_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
-# lme_dims = c(ni = 50000, nb = 50000, nt = 35, nc = 8, na = 1000)
-# tsm_1_dims = c(ni = 300000, nb = 20000, nt = 140, nc = 8, na = 1000)
-# tsm_2_dims = c(ni = 300000, nb = 20000, nt = 140, nc = 8, na = 1000)
+# lme_dims = c(ni = 5000, nb = 1000, nt = 1, nc = 2, na = 1000)
+# tsm_1_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
+# tsm_2_dims = c(ni = 100, nb = 50, nt = 30, nc = 3, na = 10)
+lme_dims = c(ni = 50000, nb = 50000, nt = 35, nc = 8, na = 1000)
+tsm_1_dims = c(ni = 300000, nb = 20000, nt = 140, nc = 8, na = 1000)
+tsm_2_dims = c(ni = 300000, nb = 20000, nt = 140, nc = 8, na = 1000)
 
 # output directories
 out_folder = "Output"
@@ -87,7 +87,7 @@ start = Sys.time()
 if (verbose) cat("  Generating Parameters, States, and Data\n")
 
 # step 1: generate random parameters
-params = gen_params()
+params = gen_params(random = F)
 
 # step 2: generate true states
 pop_out = pop_sim(params = params)
@@ -117,7 +117,7 @@ if (do_lme) {
   
   # step 5b: summarize and export the estimates from the lme/lm models
   start = Sys.time()
-  lme_summ = lme_summary(post = lme_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
+  lme_summ = lme_summary(post = lme_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose, diag_plots = F)
   if (write) write.csv(lme_summ, paste(out_dir, fileName("lme_summary", seed, ".csv"), sep = "/"), row.names = F)
   ctime = end_timer(start, ctime = ctime)
 }
@@ -128,7 +128,7 @@ if (do_tsm1) {
   # step 6a: fit the tsm1
   start = Sys.time()
   random_sleep(seed, minS = minS, maxS = maxS)
-  tsm_inits = tsm_1_gen_inits(params = params, obs = obs_out, n_chains = tsm_dims["nc"])
+  tsm_inits = tsm_1_gen_inits(params = params, obs = obs_out, n_chains = tsm_1_dims["nc"])
   tsm_1_post = fit_tsm_1_model(
     params = params, true = pop_out, obs = obs_out,
     inits = tsm_1_gen_inits(
@@ -140,7 +140,7 @@ if (do_tsm1) {
   
   # step 6b: summarize and export the estimates from the tsm model
   start = Sys.time()
-  tsm_1_summ = tsm_1_summary(post = tsm_1_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
+  tsm_1_summ = tsm_1_summary(post = tsm_1_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose, diag_plots = F)
   if (write) write.csv(tsm_1_summ, paste(out_dir, fileName("tsm_1_summary", seed, ".csv"), sep = "/"), row.names = F)
   ctime = end_timer(start, ctime = ctime)
 }
@@ -161,7 +161,7 @@ if (do_tsm2) {
   
   # step7b: summarize and export the estimates from the tsm model
   start = Sys.time()
-  tsm_2_summ = tsm_2_summary(post = tsm_2_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose)
+  tsm_2_summ = tsm_2_summary(post = tsm_2_post, seed = seed, max_p_overfished = params$max_p_overfished, verbose = verbose, diag_plots = F)
   if (write) write.csv(tsm_2_summ, paste(out_dir, fileName("tsm_2_summary", seed, ".csv"), sep = "/"), row.names = F)
   ctime = end_timer(start, ctime = ctime)
 }

@@ -36,7 +36,7 @@ do
   # only if this isn't the last one
   #if [ $seed -lt ${seeds[-1]} ]
   #then
-    sleep 60
+    sleep 300
   #fi
   
 done
