@@ -1,3 +1,5 @@
+rm(list = ls(all = T))
+
 # take the many separate .csv files and combine them into saved R objects
 extract_numbers = function(string, follow = NULL, as.num = F) {
   x = unlist(regmatches(string, gregexpr(paste("[[:digit:]]+", follow, sep = ""), string)))
@@ -7,7 +9,6 @@ extract_numbers = function(string, follow = NULL, as.num = F) {
     x
   }
 }
-
 
 # the main folder that houses the output
 out_folder = "Output"
@@ -68,7 +69,7 @@ for (i in 1:n) {
     tsm_2_tmp$iter = i
   } else {
     tsm_2_tmp = data.frame(seed = seeds[i], 
-                           param = NA, stock = NA, method = "tsm1",
+                           param = NA, stock = NA, method = "tsm2",
                            mean = NA, sd = NA, "X50." = NA, "X2.5." = NA, "X97.5." = NA, 
                            bgr = NA, ess = NA, iter = i)
   }
@@ -86,6 +87,8 @@ for (i in 1:n) {
   tsm_2_summ = rbind(tsm_2_summ, tsm_2_tmp)
 }
 
+tsm_2_summ[is.na(tsm_2_summ$param),]
+
 # delete the intermediate files
 # unlink(x = paste(out_dir, param_files[i], sep = "/"), recursive = T)
 # unlink(x = paste(out_dir, lme_files[i], sep = "/"), recursive = T)
@@ -98,5 +101,9 @@ save(tsm_1_summ, file = paste(out_dir, "tsm_1_summ", sep = "/"))
 save(tsm_2_summ, file = paste(out_dir, "tsm_2_summ", sep = "/"))
 
 
-with(tsm_2_summ, boxplot(bgr ~ param, las = 3))
+# par(mar = c(7, 2, 1, 1))
+# with(tsm_1_summ, boxplot(bgr ~ param, las = 3))
+# abline(h = c(1.1, 1.2), col = c("black", "grey"))
+# with(tsm_2_summ, boxplot(bgr ~ param, las = 3))
+# abline(h = c(1.1, 1.2), col = c("black", "grey"))
 
