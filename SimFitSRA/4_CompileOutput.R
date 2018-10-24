@@ -87,7 +87,7 @@ for (i in 1:n) {
   tsm_2_summ = rbind(tsm_2_summ, tsm_2_tmp)
 }
 
-tsm_2_summ[is.na(tsm_2_summ$param),]
+# tsm_2_summ[is.na(tsm_2_summ$param),]
 
 # delete the intermediate files
 # unlink(x = paste(out_dir, param_files[i], sep = "/"), recursive = T)

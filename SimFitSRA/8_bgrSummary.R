@@ -4,7 +4,7 @@
 args = commandArgs(trailingOnly = T)
 model = args[1]
 if (is.na(model)) {
-  stop("Must supply a model as a command line argument")
+  stop("Must supply a model as a command line argument ('tsm1', 'tsm2', 'lm', or 'lme')")
 }
 
 # load in the function needed to do this
@@ -35,5 +35,5 @@ if (model == "lme") {
   bgr_summ(summ = subset(lme_summ, method == "lme"), vars = c("alpha", "beta", "U_msy", "S_msy", "U_MSY", "S_MSY", "U_obj", "S_obj"))
 }
 
-
-
+# 
+# 
