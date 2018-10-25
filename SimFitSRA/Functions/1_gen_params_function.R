@@ -56,8 +56,9 @@ gen_params = function(nt = 40, ns = 12, rho = 0.5, min_sigR = 0.4, max_sigR = 0.
   }
   
   # OBSERVATION VARIABILITY
-  S_obs_cv = runif(ns, 0.1, 0.2)
-  C_tot_obs_cv = runif(1, 0.1, 0.2)
+  cv_S_ts_obs = matrix(runif(ns, 0.1, 0.2), nt, ns, byrow = T)
+  cv_C_t_obs = rep(runif(1, 0.1, 0.2), nt)
+  
   x_ESS = 100
   
   out = list(
@@ -82,8 +83,8 @@ gen_params = function(nt = 40, ns = 12, rho = 0.5, min_sigR = 0.4, max_sigR = 0.
     rho = rho,
     Sigma = Sigma,
     rho_mat = rho_mat,
-    S_obs_cv = S_obs_cv,
-    C_tot_obs_cv = C_tot_obs_cv,
+    cv_S_ts_obs = cv_S_ts_obs,
+    cv_C_t_obs = cv_C_t_obs,
     x_ESS = x_ESS
   )
   

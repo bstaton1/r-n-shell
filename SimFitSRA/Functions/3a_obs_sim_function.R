@@ -5,17 +5,19 @@ obs_sim = function(params, true) {
   output = with(append(params, true), {
     
     # generate lognormal observation error sd
-    sig_S_obs = sqrt(log(S_obs_cv^2 + 1))
-    sig_C_tot_obs = sqrt(log(C_tot_obs_cv^2 + 1))
+    sig_S_ts_obs = sqrt(log(cv_S_ts_obs^2 + 1))
+    sig_C_t_obs = sqrt(log(cv_C_t_obs^2 + 1))
   
     # observe spawners
     S_ts_obs = matrix(NA, nt, ns)
     for (s in 1:ns) {
-      S_ts_obs[,s] = rlnorm(nt, log(S_ts[,s]), sig_S_obs[s])
+      for (t in 1:nt) {
+        S_ts_obs[t,s] = rlnorm(1, log(S_ts[t,s]), sig_S_ts_obs[t,s])
+      }
     }
     
     # observe total harvest
-    C_tot_t_obs = rlnorm(nt, log(C_tot_t), sig_C_tot_obs)
+    C_tot_t_obs = rlnorm(nt, log(C_tot_t), sig_C_t_obs)
     
     # observe age composition
     x_tas_obs = array(NA, dim = c(nt, na, ns))
@@ -33,8 +35,8 @@ obs_sim = function(params, true) {
       C_tot_t_obs = C_tot_t_obs,
       S_ts_obs = S_ts_obs,
       x_tas_obs = x_tas_obs,
-      sig_S_s_obs = sig_S_obs,
-      sig_C_tot_obs = sig_C_tot_obs,
+      sig_S_ts_obs = sig_S_ts_obs,
+      sig_C_t_obs = sig_C_t_obs,
       U_t_obs = U_t_obs
       )
   })

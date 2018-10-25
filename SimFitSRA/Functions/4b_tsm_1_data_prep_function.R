@@ -18,6 +18,9 @@ tsm_1_data_prep = function(params, obs) {
     S_obs_t = S_obs_t[no_na_yrs]
     S_obs_n = length(S_obs)
     
+    sig_S_obs_ts_v = as.numeric(sig_S_ts_obs)
+    sig_S_obs = sig_S_obs_ts_v[no_na_yrs]
+    
     # test it
     # S_ts_obs_m[S_obs_t[100],S_obs_s[100]]
     # S_obs[100]
@@ -42,7 +45,7 @@ tsm_1_data_prep = function(params, obs) {
       
       # observed harvest states
       C_tot_t_obs = C_tot_t_obs,
-      tau_C_obs = 1/sig_C_tot_obs^2,
+      tau_C_obs = 1/sig_C_t_obs^2,
       v = rep(1, ns),
       
       # vectorized observe escapement counts
@@ -50,7 +53,7 @@ tsm_1_data_prep = function(params, obs) {
       S_obs_t = S_obs_t, # the year of the ith count
       S_obs_s = S_obs_s, # the stock of the ith count
       S_obs_n = S_obs_n, # the number of escapement observations
-      tau_S_obs = 1/sig_S_s_obs^2,
+      tau_S_obs = 1/sig_S_obs^2,
       
       # observed age comp states
       x_tas_obs = x_tas_obs,
