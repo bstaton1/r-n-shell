@@ -46,7 +46,7 @@ tsm_2_data_prep = function(params, obs) {
       # observed harvest states
       C_tot_t_obs = C_tot_t_obs,
       tau_C_obs = 1/sig_C_t_obs^2,
-      v = rep(1, ns),
+      v = v,
       
       # vectorized observe escapement counts
       S_obs = S_obs, # the count
