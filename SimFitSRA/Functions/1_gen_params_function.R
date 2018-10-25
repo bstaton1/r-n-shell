@@ -1,6 +1,6 @@
 ##### FUNCTION TO GENERATE DRIVING PARAMETERS #####
 
-gen_params = function(nt = 40, ns = 12, rho = 0.5, min_sigR = 0.4, max_sigR = 0.6, random = F) {
+gen_params = function(nt = 42, ns = 12, rho = 0.5, min_sigR = 0.4, max_sigR = 0.6, random = F) {
   
   # dimensions
   a_min = 4
