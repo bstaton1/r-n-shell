@@ -78,7 +78,7 @@ count_obs_y = function(x) {
 
 ## other functions to help with sampling the time series
 sample_TS = function(type = "low", minRobs = 3) {
-  dat = read.csv("C:/Users/bas0041/Dropbox/Dissertation/Analysis/3-multistock-sra/kusko-multi-sra/1-data-prep/1-state-reconstructions/outputs/S_Ests_Oct_18.csv")
+  dat = read.csv("S_Ests_Kusko.csv")
   nt = length(unique(dat$year))
   
   if (type == "all") {
