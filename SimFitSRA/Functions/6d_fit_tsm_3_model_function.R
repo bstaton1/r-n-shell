@@ -9,7 +9,7 @@ fit_tsm_3_model = function(params, true, obs,
     jags_dat = tsm_1_3_data_prep(params = params, obs = obs)
     
     ### NODES TO MONITOR ###
-    jags_params = c("alpha", "beta", "U_msy", "S_msy", 
+    jags_params = c("alpha", "beta", "U_msy", "S_msy", "U",
                     "sigma_R", "rho_mat", "phi", "pi", "D_sum")
     
     ### RUN THE SAMPLER: ###
