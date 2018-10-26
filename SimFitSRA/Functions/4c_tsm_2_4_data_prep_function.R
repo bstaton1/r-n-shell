@@ -1,7 +1,5 @@
 
-# attach(kusko_params); attach(kusko_obs)
-
-tsm_1_data_prep = function(params, obs) {
+tsm_2_4_data_prep = function(params, obs) {
   
   output = with(append(params, obs), {
     
@@ -64,10 +62,8 @@ tsm_1_data_prep = function(params, obs) {
       n_age_stocks = length(age_comp_stocks),
       
       # stuff for covariance matrix construction
-      vcov.row = vcov.row,
-      vcov.col = vcov.col,
-      vcov.ind = vcov.ind,
-      vcov.N = ns * ns
+      R_wish = diag(rep(1,ns)),
+      df_wish = ns + 1 
     )
   })
   
