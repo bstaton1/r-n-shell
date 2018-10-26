@@ -75,7 +75,7 @@ tsm_3_summary = function(post, params, seed, verbose = T, diag_plots = T) {
     ess = effectiveSize(new_post)
     
     if (diag_plots) {
-      pdf(fileName("Output/tsm_diag_plots", seed,".pdf"), h = 5, w = 8)
+      pdf(fileName("Output/tsm_3_diag_plots", seed,".pdf"), h = 5, w = 8)
       x = get.post(new_post, "U_MSY", do.plot = T, new.window = F)
       x = get.post(new_post, "S_MSY", do.plot = T, new.window = F)
       x = get.post(new_post, "mean_sigma_R", do.plot = T, new.window = F)

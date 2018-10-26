@@ -12,7 +12,7 @@ fit_tsm_1_model = function(params, true, obs,
     
     ### NODES TO MONITOR ###
     jags_params = c("alpha", "beta", "U_msy", "S_msy", 
-                    "sigma_R[1]", "rho_mat[2,1]", "phi", "pi")
+                    "sigma_R", "rho_mat", "phi", "pi")
     
     ### RUN THE SAMPLER: ###
     if (verbose) cat("  Running JAGS: TSM Model #1 (", 
