@@ -19,23 +19,20 @@ mod = function() {
     log_resid_0[s] <- log_resid_0a
   }
   
-  # build the Sigma_R[,] matrix
-  sig.common ~ dunif(0,2)
-  var.common <- sig.common^2
-  rho.common ~ dunif(-0.05,1)
-  rho.vec[1] <- 1
-  rho.vec[2] <- rho.common
-  
-  for (i in 1:vcov.N) {
-    rho_mat[vcov.row[i],vcov.col[i]] <- rho.vec[vcov.ind[i]]
-    Sigma_R[vcov.row[i],vcov.col[i]] <- var.common * rho.vec[vcov.ind[i]]
-  }
-  
-  Tau_R[1:ns,1:ns] <- inverse(Sigma_R[1:ns,1:ns])
+  # estimate the covariance matrix on log(recruitment states
+  Tau_R[1:ns,1:ns] ~ dwish(R_wish[1:ns,1:ns], df_wish)
+  Sigma_R[1:ns,1:ns] <- inverse(Tau_R)
   
   # white noise process sd for each substock
   for (s in 1:ns) {
     sigma_R[s] <- sqrt(Sigma_R[s,s])
+  }
+  
+  # get the pairwise correlation matrix
+  for (i in 1:ns) {
+    for (j in 1:ns) {
+      rho_mat[i,j] <- Sigma_R[i,j]/(sigma_R[i] * sigma_R[j])
+    }
   }
   
   # produce Ricker predictions
@@ -86,8 +83,14 @@ mod = function() {
   pi[3] <- prob[3] * (1 - pi[1] - pi[2])
   pi[4] <- 1 - pi[1] - pi[2] - pi[3]
   
-  for (y in 1:ny) {
-    p[y,1:na] <- pi[1:na]
+  D_scale ~ dunif(0.03, 1)
+  D_sum <- 1/D_scale^2
+  for (a in 1:na) {
+    dir_alpha[a] <- D_sum * pi[a]
+    for (y in 1:ny) {
+      g[y,a] ~ dgamma(dir_alpha[a],1)
+      p[y,a] <- g[y,a]/sum(g[y,1:na])
+    }
   }
   
   # allocate R[y,s] to N[t,a,s] and create predicted calendar year states for each stock
@@ -144,5 +147,5 @@ mod = function() {
 }
 
 if(!dir.exists("Model Files")) dir.create("Model Files")
-model_file = "Model Files/tsm_model_1.txt"
+model_file = "Model Files/tsm_model_3.txt"
 write.model(mod, model_file); rm(mod); rm(model_file)

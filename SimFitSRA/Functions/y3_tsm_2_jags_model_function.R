@@ -140,5 +140,6 @@ mod = function() {
   }
 }
 
+if(!dir.exists("Model Files")) dir.create("Model Files")
 model_file = "Model Files/tsm_model_2.txt"
 write.model(mod, model_file); rm(mod); rm(model_file)

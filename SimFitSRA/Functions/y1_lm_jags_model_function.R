@@ -39,5 +39,6 @@ mod = function() {
   }
 }
 
+if(!dir.exists("Model Files")) dir.create("Model Files")
 model_file = "Model Files/lme_model.txt"
 write.model(mod, model_file); rm(mod); rm(model_file)
