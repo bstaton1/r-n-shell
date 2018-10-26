@@ -8,7 +8,7 @@ fit_tsm_2_model = function(params, true, obs,
   output = with(append(append(params, true), obs), {
     
     ### COMPILE DATA ###
-    jags_dat = tsm_2_data_prep(params = params, obs = obs)
+    jags_dat = tsm_2_4_data_prep(params = params, obs = obs)
     
     ### NODES TO MONITOR ###
     jags_params = c("alpha", "beta", "U_msy", "S_msy", 
