@@ -1,9 +1,9 @@
 
-fit_tsm_3_model = function(params, true, obs,
+fit_tsm_3_model = function(params, obs,
                            dims = c(ni = 100, nb = 10, nt = 1, nc = 2, na = 1000),
                            inits = NULL, parallel = T, verbose = T, jags_verbose = F) {
   
-  output = with(append(append(params, true), obs), {
+  output = with(append(params, obs), {
     
     ### COMPILE DATA ###
     jags_dat = tsm_1_3_data_prep(params = params, obs = obs)

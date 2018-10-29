@@ -1,11 +1,11 @@
 # attach(params); attach(obs); attach(true)
 # detach(params); detach(obs); detach(true)
 
-fit_tsm_2_model = function(params, true, obs,
+fit_tsm_2_model = function(params, obs,
                            dims = c(ni = 100, nb = 10, nt = 1, nc = 2, na = 1000),
                            inits = NULL, parallel = T, verbose = T, jags_verbose = F) {
   
-  output = with(append(append(params, true), obs), {
+  output = with(append(params, obs), {
     
     ### COMPILE DATA ###
     jags_dat = tsm_2_4_data_prep(params = params, obs = obs)

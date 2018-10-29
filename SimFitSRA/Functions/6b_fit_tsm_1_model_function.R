@@ -1,11 +1,11 @@
 # attach(params); attach(obs); attach(true)
 # detach(params); detach(obs); detach(true)
 
-fit_tsm_1_model = function(params, true, obs,
+fit_tsm_1_model = function(params, obs,
                            dims = c(ni = 100, nb = 10, nt = 1, nc = 2, na = 1000),
                            inits = NULL, parallel = T, verbose = T, jags_verbose = F) {
   
-  output = with(append(append(params, true), obs), {
+  output = with(append(params, obs), {
     
     ### COMPILE DATA ###
     jags_dat = tsm_1_3_data_prep(params = params, obs = obs)
@@ -17,7 +17,7 @@ fit_tsm_1_model = function(params, true, obs,
     ### RUN THE SAMPLER: ###
     if (verbose) cat("  Running JAGS: TSM Model #1 (", 
                      ifelse(parallel, "Parallel", "Not Parallel"), ")\n", sep = "")
-    post = tryCatch({
+    # post = tryCatch({
       # capture.output(
         # invisible(
      jags.basic(data = jags_dat,
@@ -35,9 +35,9 @@ fit_tsm_1_model = function(params, true, obs,
         # ),
         # file = "JAGS_messages.txt", append = T
       # )
-    }, error = function(e) NULL)
+    # }, error = function(e) NULL)
     
-    post
+    # post
   })
   
   # return the output

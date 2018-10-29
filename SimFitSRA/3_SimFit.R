@@ -120,7 +120,7 @@ if (do_lme) {
   # step 5a: fit the lme/lm models
   random_sleep(seed + 1, minS = minS, maxS = maxS)
   start = Sys.time()
-  lme_post = fit_lme_model(params = params, true = pop_out, obs = obs_out,
+  lme_post = fit_lme_model(params = params, obs = obs_out,
                            dims = lme_dims, parallel = P,
                            verbose = verbose, jags_verbose = jags_verbose)
   
@@ -138,7 +138,7 @@ if (do_tsm1) {
   start = Sys.time()
   random_sleep(seed + 2, minS = minS, maxS = maxS)
   tsm_1_post = fit_tsm_1_model(
-    params = params, true = pop_out, obs = obs_out,
+    params = params, obs = obs_out,
     inits = tsm_1_gen_inits(
       params = params, obs = obs_out,
       n_chains = tsm_1_dims["nc"]),
@@ -160,7 +160,7 @@ if (do_tsm2) {
   random_sleep(seed + 3, minS = minS, maxS = maxS)
   start = Sys.time()
   tsm_2_post = fit_tsm_2_model(
-    params = params, true = pop_out, obs = obs_out,
+    params = params, obs = obs_out,
     inits = tsm_1_gen_inits(
       params = params, obs = obs_out,
       n_chains = tsm_2_dims["nc"]),
@@ -182,7 +182,7 @@ if (do_tsm3) {
   random_sleep(seed + 4, minS = minS, maxS = maxS)
   start = Sys.time()
   tsm_3_post = fit_tsm_3_model(
-    params = params, true = pop_out, obs = obs_out,
+    params = params, obs = obs_out,
     inits = tsm_1_gen_inits(
       params = params, obs = obs_out,
       n_chains = tsm_3_dims["nc"]),
@@ -204,7 +204,7 @@ if (do_tsm4) {
   random_sleep(seed + 5, minS = minS, maxS = maxS)
   start = Sys.time()
   tsm_4_post = fit_tsm_4_model(
-    params = params, true = pop_out, obs = obs_out,
+    params = params, obs = obs_out,
     inits = tsm_1_gen_inits(
       params = params, obs = obs_out,
       n_chains = tsm_4_dims["nc"]),
