@@ -24,16 +24,20 @@ lme_files = out_files[first3 == "lme" & last3 == "csv"]
 tsm_files = out_files[first3 == "tsm" & last3 == "csv"]
 tsm_1_files = tsm_files[substr(tsm_files, 5, 5) == 1]
 tsm_2_files = tsm_files[substr(tsm_files, 5, 5) == 2]
+tsm_3_files = tsm_files[substr(tsm_files, 5, 5) == 3]
+tsm_4_files = tsm_files[substr(tsm_files, 5, 5) == 4]
 param_files = out_files[first3 == "par" & last3 == "csv"]
 
 # the seeds that were saved for each type
 lme_seeds = extract_numbers(lme_files, as.num = T)
 tsm_1_seeds = extract_numbers(extract_numbers(tsm_1_files, follow = ".csv"), as.num = T)
 tsm_2_seeds = extract_numbers(extract_numbers(tsm_2_files, follow = ".csv"), as.num = T)
+tsm_3_seeds = extract_numbers(extract_numbers(tsm_3_files, follow = ".csv"), as.num = T)
+tsm_4_seeds = extract_numbers(extract_numbers(tsm_4_files, follow = ".csv"), as.num = T)
 param_seeds = extract_numbers(param_files, as.num = T)
 
 # the seeds saved across all types
-seeds = sort(unique(c(lme_seeds, tsm_1_seeds, tsm_2_seeds, param_seeds)))
+seeds = sort(unique(c(lme_seeds, tsm_1_seeds, tsm_2_seeds, tsm_3_seeds, tsm_4_seeds, param_seeds)))
 n = length(seeds)
 
 # loop over these unique seeds:
@@ -41,6 +45,10 @@ lme_summ = NULL
 param_summ = NULL
 tsm_1_summ = NULL
 tsm_2_summ = NULL
+tsm_3_summ = NULL
+tsm_4_summ = NULL
+
+i = 2
 
 for (i in 1:n) {
   
@@ -74,6 +82,26 @@ for (i in 1:n) {
                            bgr = NA, ess = NA, iter = i)
   }
   
+  if (seeds[i] %in% tsm_3_seeds) {
+    tsm_3_tmp = read.csv(paste(out_dir, tsm_3_files[tsm_3_seeds == seeds[i]], sep = "/"), stringsAsFactors = F)
+    tsm_3_tmp$iter = i
+  } else {
+    tsm_3_tmp = data.frame(seed = seeds[i], 
+                           param = NA, stock = NA, method = "tsm3",
+                           mean = NA, sd = NA, "X50." = NA, "X2.5." = NA, "X97.5." = NA, 
+                           bgr = NA, ess = NA, iter = i)
+  }
+  
+  if (seeds[i] %in% tsm_4_seeds) {
+    tsm_4_tmp = read.csv(paste(out_dir, tsm_4_files[tsm_4_seeds == seeds[i]], sep = "/"), stringsAsFactors = F)
+    tsm_4_tmp$iter = i
+  } else {
+    tsm_4_tmp = data.frame(seed = seeds[i], 
+                           param = NA, stock = NA, method = "tsm4",
+                           mean = NA, sd = NA, "X50." = NA, "X2.5." = NA, "X97.5." = NA, 
+                           bgr = NA, ess = NA, iter = i)
+  }
+  
   if (seeds[i] %in% param_seeds) {
     param_tmp = read.csv(paste(out_dir, param_files[param_seeds == seeds[i]], sep = "/"), stringsAsFactors = F)
     param_tmp$iter = i
@@ -85,7 +113,11 @@ for (i in 1:n) {
   param_summ = rbind(param_summ, param_tmp)
   tsm_1_summ = rbind(tsm_1_summ, tsm_1_tmp)
   tsm_2_summ = rbind(tsm_2_summ, tsm_2_tmp)
+  tsm_3_summ = rbind(tsm_3_summ, tsm_3_tmp)
+  tsm_4_summ = rbind(tsm_4_summ, tsm_4_tmp)
 }
+
+
 
 # tsm_2_summ[is.na(tsm_2_summ$param),]
 
@@ -96,14 +128,13 @@ for (i in 1:n) {
 
 # save the output as environment objects
 save(param_summ, file = paste(out_dir, "param_summ", sep = "/"))
+# if (length(lme_1_seeds) > 0) save(lme_summ, file = paste(out_dir, "lme_summ", sep = "/"))
+# if (length(tsm_1_seeds) > 0) save(tsm_1_summ, file = paste(out_dir, "tsm_1_summ", sep = "/"))
+# if (length(tsm_2_seeds) > 0) save(tsm_2_summ, file = paste(out_dir, "tsm_2_summ", sep = "/"))
+# if (length(tsm_3_seeds) > 0) save(tsm_3_summ, file = paste(out_dir, "tsm_3_summ", sep = "/"))
+# if (length(tsm_4_seeds) > 0) save(tsm_4_summ, file = paste(out_dir, "tsm_4_summ", sep = "/"))
 save(lme_summ, file = paste(out_dir, "lme_summ", sep = "/"))
 save(tsm_1_summ, file = paste(out_dir, "tsm_1_summ", sep = "/"))
 save(tsm_2_summ, file = paste(out_dir, "tsm_2_summ", sep = "/"))
-
-
-# par(mar = c(7, 2, 1, 1))
-# with(tsm_1_summ, boxplot(bgr ~ param, las = 3))
-# abline(h = c(1.1, 1.2), col = c("black", "grey"))
-# with(tsm_2_summ, boxplot(bgr ~ param, las = 3))
-# abline(h = c(1.1, 1.2), col = c("black", "grey"))
-
+save(tsm_3_summ, file = paste(out_dir, "tsm_3_summ", sep = "/"))
+save(tsm_4_summ, file = paste(out_dir, "tsm_4_summ", sep = "/"))
