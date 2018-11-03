@@ -22,12 +22,22 @@ if (model == "tsm2") {
   ess_summ(summ = tsm_2_summ, vars = c("alpha", "beta", "mean_rho", "mean_sigma_R", "U_msy", "S_msy", "U_MSY", "S_MSY", "U_obj", "S_obj"))
 }
 
+if (model == "tsm3") {
+  load("Output/tsm_3_summ")
+  cat("\nTSM #3:")
+  ess_summ(summ = tsm_3_summ, vars = c("alpha", "beta", "mean_rho", "mean_sigma_R", "U_msy", "S_msy", "U_MSY", "S_MSY", "U_obj", "S_obj", "D_sum"))
+}
+
+if (model == "tsm4") {
+  load("Output/tsm_4_summ")
+  cat("\nTSM #4:")
+  ess_summ(summ = tsm_4_summ, vars = c("alpha", "beta", "mean_rho", "mean_sigma_R", "U_msy", "S_msy", "U_MSY", "S_MSY", "U_obj", "S_obj", "D_sum"))
+}
 if (model == "lm") {
   load("Output/lme_summ")
   cat("\nLM:")
   ess_summ(summ = subset(lme_summ, method == "lm"), vars = c("alpha", "beta", "U_msy", "S_msy", "U_MSY", "S_MSY", "U_obj", "S_obj"))
 }
-
 
 if (model == "lme") {
   load("Output/lme_summ")
