@@ -1,6 +1,8 @@
 # load packages. Should really be using pkg::fun
-suppressMessages(library(R2OpenBUGS))
-suppressMessages(library(jagsUI))
+suppressWarnings(suppressMessages(library(coda, warn.conflicts = F)))
+suppressWarnings(suppressMessages(library(R2OpenBUGS, warn.conflicts = F)))
+suppressWarnings(suppressMessages(library(jagsUI, warn.conflicts = F)))
+suppressWarnings(suppressMessages(library(reshape2, warn.conflicts = F)))
 
 # clear the workspace
 rm(list = ls(all = T))
